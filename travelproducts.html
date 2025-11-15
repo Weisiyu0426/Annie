@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel NZ - 新西兰旅行方案</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #fafafa;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+        /* 导航栏（含logo） */
+.nav {
+    width: 100%;
+    background-color: rgba(26, 54, 93, 0.95); /* 直接使用滚动后的背景色，取消透明 */
+    padding: 1.5rem 0;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav.scrolled {
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0; /* 仅保留滚动时的内边距变化效果 */
+}
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+}
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            letter-spacing: -0.5px;
+            transition: color 0.3s;
+        }
+        .nav.scrolled .logo {
+            color: white;
+        }
+        .logo i {
+            font-size: 2rem;
+            transform: rotate(-15deg);
+            transition: transform 0.3s;
+        }
+        .logo:hover i {
+            transform: rotate(0);
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+        .nav-menu li {
+            margin-left: 2.5rem;
+            position: relative;
+        }
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 0.5rem 0;
+        }
+        .nav.scrolled .nav-menu a {
+            color: white;
+        }
+        .nav-menu a:hover {
+            color: #90cdf4;
+        }
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #90cdf4;
+            transition: width 0.3s;
+        }
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        /* 内容区域通用样式 */
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+            color: #1a365d;
+            font-size: 2.5rem;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background-color: #3182ce;
+            border-radius: 2px;
+        }
+        .island-title {
+            color: #1a365d;
+            margin: 5rem 0 2.5rem;
+            padding-left: 1.2rem;
+            border-left: 4px solid #3182ce;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        /* 内容区域 */
+        .container {
+            max-width: 1400px;
+            margin: 12rem auto 6rem;
+            padding: 0 2rem;
+        }
+        /* 旅行方案切换按钮 */
+        .trip-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        .trip-tab-btn {
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(49, 130, 206, 0.3);
+        }
+        .trip-tab-btn:hover {
+            background-color: #2b6cb0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(49, 130, 206, 0.4);
+        }
+        .trip-tab-btn.active {
+            background-color: #1a365d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        /* 方案容器 */
+        .trip-section {
+            margin-bottom: 8rem;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .trip-section.active {
+            display: block;
+        }
+        .trip-header {
+            background-color: #1a365d;
+            color: white;
+            padding: 2rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        .trip-header i {
+            font-size: 3rem;
+        }
+        .trip-header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .trip-header p {
+            opacity: 0.9;
+            max-width: 800px;
+        }
+        /* 路线地图 */
+        .route-map {
+            height: auto;
+            background-color: #e8eaf6;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .map-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            padding: 1rem;
+        }
+        .map-image {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        /* 方案卡片 */
+        .itinerary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+        }
+        .itinerary-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .itinerary-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .itinerary-image  {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .itinerary-content {
+            padding: 1.8rem;
+        }
+        .itinerary-title {
+            color: #1a365d;
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #e3f2fd;
+        }
+        .itinerary-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #666;
+            font-size: 0.95rem;
+        }
+        .itinerary-meta div {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .itinerary-meta i {
+            color: #1a365d;
+        }
+        /* 交通信息样式 */
+        .transport-info {
+            background-color: #f0f7ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #3182ce;
+        }
+        .transport-info h4 {
+            color: #1a365d;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .transport-detail {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.95rem;
+        }
+        .transport-detail span {
+            background-color: #e3f2fd;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+        }
+        .itinerary-description {
+            margin-bottom: 1.5rem;
+            color: #444;
+        }
+        /* 行程亮点 */
+        .highlights {
+            background-color: #f8fafc;
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .highlights h4 {
+            color: #1a365d;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .highlights ul {
+            padding-left: 1.5rem;
+            line-height: 1.8;
+        }
+        .highlights li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 0.3rem;
+        }
+        /* 每日行程 */
+        .daily-itinerary {
+            margin-top: 1.5rem;
+            border-top: 1px dashed #ddd;
+            padding-top: 1.5rem;
+        }
+        .daily-itinerary h4 {
+            color: #1a365d;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .day-item {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .day-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #3182ce;
+        }
+        .day-item strong {
+            color: #1a365d;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        .day-transport {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        /* 旅行贴士 */
+        .travel-tips {
+            background-color: #e3f2fd;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        .travel-tips h3 {
+            color: #1a365d;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .tip-card {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .tip-card h4 {
+            color: #3182ce;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .tip-card ul {
+            padding-left: 1.5rem;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        /* 页脚 */
+        .footer {
+            width: 100%;
+            background: #1a202c;
+            color: white;
+            padding: 5rem 0 2rem;
+            margin-top: 8rem;
+        }
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 4rem;
+        }
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: #3182ce;
+        }
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .footer-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        .footer-links a:hover {
+            color: #3182ce;
+            transform: translateX(5px);
+        }
+        .footer p {
+            margin-top: 1rem;
+            color: #a0aec0;
+            line-height: 1.7;
+        }
+        .footer-bottom {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding-top: 3rem;
+            margin-top: 3rem;
+            border-top: 1px solid #2d3748;
+        }
+        .social-links {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+        .social-links a {
+            color: white;
+            background-color: #2d3748;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .social-links a:hover {
+            background-color: #3182ce;
+            transform: translateY(-3px);
+        }
+        /* 响应式调整 */
+        @media (max-width: 1024px) {
+            .container {
+                margin-top: 10rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                padding: 0 1rem;
+            }
+            .nav-menu {
+                margin-top: 1.5rem;
+            }
+            .nav-menu li {
+                margin: 0 0.8rem;
+            }
+            .container {
+                margin-top: 10rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .itinerary-cards {
+                grid-template-columns: 1fr;
+            }
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+            .route-map {
+                height: 250px;
+            }
+            .trip-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            .trip-tab-btn {
+                width: 80%;
+                justify-content: center;
+            }
+            .trip-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .island-title {
+                font-size: 1.5rem;
+            }
+        }
+        /* 语言切换按钮 */
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-left: 2.5rem;
+        }
+        .lang-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .nav.scrolled .lang-btn {
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+        .lang-btn.active {
+            background: white;
+            color: #1a365d;
+            border-color: white;
+        }
+        .lang-btn:hover:not(.active) {
+            border-color: white;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+    <!-- 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">
+                <i class="fas fa-globe-asia"></i>
+                Travel NZ
+            </a>
+            <ul class="nav-menu">
+                <div class="lang-switch">
+                    <button class="lang-btn active" data-lang="zh">中文</button>
+                    <button class="lang-btn" data-lang="en">English</button>
+                </div>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="travelproducts.html">Travel Products</a></li>
+              <li><a href="contactus.html">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 内容区域 -->
+    <div class="container">
+        <h1 class="section-title fade-in" data-i18n="新西兰精选旅行方案">新西兰精选旅行方案</h1>
+        <p class="intro-text fade-in" data-i18n="intro-text" style="max-width: 900px; margin: 0 auto 3rem; text-align: center; font-size: 1.1rem; color: #555;">
+            新西兰由北岛和南岛组成，两岛各具特色。北岛以火山地热、毛利文化和现代化都市为特色；南岛则以壮丽的自然景观、冰川峡湾和户外探险闻名。以下为您精心设计的非自驾旅行方案，涵盖大巴、飞机、轮渡等多种交通方式，行程灵活舒适。
+        </p>
+
+        <!-- 旅行方案切换按钮 -->
+        <div class="trip-tabs fade-in">
+            <button class="trip-tab-btn active" data-tab="north-island">
+                <i class="fas fa-map-marked-alt"></i> <span data-i18n="北岛深度7日游按钮">北岛深度7日游</span>
+            </button>
+            <button class="trip-tab-btn" data-tab="south-island">
+                <i class="fas fa-mountain"></i> <span data-i18n="南岛冰川探险10日游按钮">南岛冰川探险10日游</span>
+            </button>
+            <button class="trip-tab-btn" data-tab="full-newzealand">
+                <i class="fas fa-globe"></i> <span data-i18n="新西兰全景12日游按钮">新西兰全景12日游</span>
+            </button>
+        </div>
+
+        <!-- 北岛深度旅行方案 -->
+        <section class="trip-section active fade-in" id="north-island">
+            <div class="trip-header">
+                <i class="fas fa-map-marked-alt"></i>
+                <div>
+                    <h2 data-i18n="北岛深度7日游标题">北岛深度7日游</h2>
+                    <p data-i18n="北岛深度7日游描述">乘坐大巴与短途航班，探索火山地热奇观，体验纯正毛利文化，感受现代都市与自然景观的完美融合</p>
+                </div>
+            </div>
+
+            <!-- 北岛路线地图 -->
+            <div class="route-map">
+                <div class="map-content">
+                    <img src="北地图.png" alt="新西兰北岛地图" class="map-image">
+                </div>
+            </div>
+
+            <div class="itinerary-cards">
+                <!-- 北岛深度7日游 -->
+                <div class="itinerary-card">
+                    <img src="北1.jpg" alt="北岛深度7日游" class="itinerary-image">
+                    <div class="itinerary-content">
+                        <h3 class="itinerary-title" data-i18n="北岛深度7日游">北岛深度7日游</h3>
+                        <div class="itinerary-meta">
+                            <div><i class="fas fa-calendar-alt"></i> <span data-i18n="7天6晚">7天6晚</span></div>
+                            <div><i class="fas fa-plane-departure"></i> <span data-i18n="出发地：奥克兰（有机场）">出发地：奥克兰（有机场）</span></div>
+                            <div><i class="fas fa-plane-arrival"></i> <span data-i18n="结束地：惠灵顿（有机场）">结束地：惠灵顿（有机场）</span></div>
+                            <div><i class="fas fa-cloud-sun"></i> <span data-i18n="春秋季最佳（3-5月, 9-11月）">春秋季最佳（3-5月, 9-11月）</span></div>
+                            <div><i class="fas fa-route"></i> <span data-i18n="总行程约1000公里">总行程约1000公里</span></div>
+                        </div>
+                        
+                        <div class="transport-info">
+                            <h4><i class="fas fa-bus-alt"></i> <span data-i18n="主要交通方式">主要交通方式</span></h4>
+                            <div class="transport-detail">
+                                <span><i class="fas fa-bus"></i> <span data-i18n="豪华旅游大巴">豪华旅游大巴</span></span>
+                                <span><i class="fas fa-plane"></i> <span data-i18n="短途航班（惠灵顿返程可选）">短途航班（惠灵顿返程可选）</span></span>
+                                <span><i class="fas fa-taxi"></i> <span data-i18n="当地接送">当地接送</span></span>
+                            </div>
+                        </div>
+                        
+                        <p class="itinerary-description" data-i18n="北岛行程描述">
+                            这条深度路线从奥克兰出发，一路向南直至首都惠灵顿，全面体验北岛的自然景观与人文风情，适合时间充裕的旅行者。全程采用舒适大巴与短途航班结合的方式，轻松便捷。
+                        </p>
+                        
+                        <div class="highlights">
+                            <h4><i class="fas fa-star"></i> <span data-i18n="行程亮点">行程亮点</span></h4>
+                            <ul>
+                                <li data-i18n="北岛亮点1">在怀托摩萤火虫洞乘船观赏万千萤火虫的梦幻景象</li>
+                                <li data-i18n="北岛亮点2">游览新西兰首都惠灵顿，参观国家博物馆</li>
+                                <li data-i18n="北岛亮点3">探索汤加里罗国家公园的火山景观，徒步汤加里罗越山步道</li>
+                                <li data-i18n="北岛亮点4">在东海岸品尝新鲜海鲜，体验小镇风情</li>
+                                <li data-i18n="北岛亮点5">参观世界上最陡的街道鲍德温街</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="daily-itinerary">
+                            <h4 data-i18n="每日行程概览">每日行程概览</h4>
+                            <div class="day-item">
+                                <strong data-i18n="D1-2：奥克兰及周边">D1-2：奥克兰及周边</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="市内交通 + 短途巴士（约80公里，1.5小时）">市内交通 + 短途巴士（约80公里，1.5小时）</span></div>
+                                <div data-i18n="市区游览，怀托摩萤火虫洞一日游，宿奥克兰">市区游览，怀托摩萤火虫洞一日游，宿奥克兰</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D3：奥克兰→罗托鲁瓦">D3：奥克兰→罗托鲁瓦</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="豪华大巴（约230公里，3小时）">豪华大巴（约230公里，3小时）</span></div>
+                                <div data-i18n="前往罗托鲁瓦，地热景观与毛利文化体验，宿罗托鲁瓦">前往罗托鲁瓦，地热景观与毛利文化体验，宿罗托鲁瓦</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D4：罗托鲁瓦→陶波">D4：罗托鲁瓦→陶波</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="旅游巴士（约105公里，1.5小时）">旅游巴士（约105公里，1.5小时）</span></div>
+                                <div data-i18n="陶波湖与胡卡瀑布游览，宿陶波">陶波湖与胡卡瀑布游览，宿陶波</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D5：陶波→汤加里罗">D5：陶波→汤加里罗</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="短途巴士（约50公里，1小时）">短途巴士（约50公里，1小时）</span></div>
+                                <div data-i18n="汤加里罗国家公园徒步，宿国家公园附近">汤加里罗国家公园徒步，宿国家公园附近</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D6：汤加里罗→惠灵顿">D6：汤加里罗→惠灵顿</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="长途巴士（约350公里，5小时）">长途巴士（约350公里，5小时）</span></div>
+                                <div data-i18n="前往惠灵顿，市区游览，宿惠灵顿">前往惠灵顿，市区游览，宿惠灵顿</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D7：惠灵顿">D7：惠灵顿</strong>
+                                <div class="day-transport"><i class="fas fa-taxi"></i> <span data-i18n="市内交通">市内交通</span></div>
+                                <div data-i18n="国家博物馆，鲍德温街参观，行程结束（可从惠灵顿机场返程）">国家博物馆，鲍德温街参观，行程结束（可从惠灵顿机场返程）</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 南岛冰川探险旅行方案 -->
+        <section class="trip-section fade-in" id="south-island">
+            <div class="trip-header">
+                <i class="fas fa-mountain"></i>
+                <div>
+                    <h2 data-i18n="南岛冰川探险10日游标题">南岛冰川探险10日游</h2>
+                    <p data-i18n="南岛冰川探险10日游描述">结合飞机与专业旅游巴士，深入冰川地区，体验冰川徒步与峡湾风光，感受纯净原始的自然之美</p>
+                </div>
+            </div>
+
+            <!-- 南岛路线地图 -->
+            <div class="route-map">
+                <div class="map-content">
+                    <img src="南地图.jpg" alt="新西兰南岛地图" class="map-image">
+                </div>
+            </div>
+
+            <div class="itinerary-cards">
+                <!-- 南岛冰川探险10日游 -->
+                <div class="itinerary-card">
+                    <img src="南2.jpg" alt="南岛冰川探险10日游" class="itinerary-image">
+                    <div class="itinerary-content">
+                        <h3 class="itinerary-title" data-i18n="南岛冰川探险10日游">南岛冰川探险10日游</h3>
+                        <div class="itinerary-meta">
+                            <div><i class="fas fa-calendar-alt"></i> <span data-i18n="10天9晚">10天9晚</span></div>
+                            <div><i class="fas fa-plane-departure"></i> <span data-i18n="出发地：基督城（有机场）">出发地：基督城（有机场）</span></div>
+                            <div><i class="fas fa-plane-arrival"></i> <span data-i18n="结束地：皇后镇（有机场）">结束地：皇后镇（有机场）</span></div>
+                            <div><i class="fas fa-snowflake"></i> <span data-i18n="冬季最佳（6-8月）">冬季最佳（6-8月）</span></div>
+                            <div><i class="fas fa-route"></i> <span data-i18n="总行程约850公里">总行程约850公里</span></div>
+                        </div>
+                        
+                        <div class="transport-info">
+                            <h4><i class="fas fa-plane"></i> <span data-i18n="主要交通方式">主要交通方式</span></h4>
+                            <div class="transport-detail">
+                                <span><i class="fas fa-plane"></i> <span data-i18n="内陆航班（基督城-霍基蒂卡）">内陆航班（基督城-霍基蒂卡）</span></span>
+                                <span><i class="fas fa-bus"></i> <span data-i18n="专业探险巴士">专业探险巴士</span></span>
+                                <span><i class="fas fa-ship"></i> <span data-i18n="峡湾游船">峡湾游船</span></span>
+                            </div>
+                        </div>
+                        
+                        <p class="itinerary-description" data-i18n="南岛行程描述">
+                            这条专业路线专注于南岛壮观的冰川景观，从弗朗茨约瑟夫冰川到福克斯冰川，体验冰爪徒步的独特乐趣，感受大自然的鬼斧神工。行程采用飞机与专业探险巴士结合的方式，既节省时间又能深入偏远景区。
+                        </p>
+                        
+                        <div class="highlights">
+                            <h4><i class="fas fa-star"></i> <span data-i18n="行程亮点">行程亮点</span></h4>
+                            <ul>
+                                <li data-i18n="南岛亮点1">弗朗茨约瑟夫冰川向导带领冰爪徒步</li>
+                                <li data-i18n="南岛亮点2">福克斯冰川探索，参观冰川湖泊</li>
+                                <li data-i18n="南岛亮点3">在马瑟森湖观赏库克山和塔斯曼山倒影</li>
+                                <li data-i18n="南岛亮点4">徒步哈斯特通道，穿越温带雨林</li>
+                                <li data-i18n="南岛亮点5">登顶本洛蒙德山，俯瞰皇后镇全景</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="daily-itinerary">
+                            <h4 data-i18n="每日行程概览">每日行程概览</h4>
+                            <div class="day-item">
+                                <strong data-i18n="D1-2：基督城">D1-2：基督城</strong>
+                                <div class="day-transport"><i class="fas fa-taxi"></i> <span data-i18n="市内交通">市内交通</span></div>
+                                <div data-i18n="抵达基督城，城市游览与适应，宿基督城">抵达基督城，城市游览与适应，宿基督城</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D3：基督城→霍基蒂卡">D3：基督城→霍基蒂卡</strong>
+                                <div class="day-transport"><i class="fas fa-plane"></i> <span data-i18n="内陆航班（约50分钟）">内陆航班（约50分钟）</span></div>
+                                <div data-i18n="飞往霍基蒂卡，转乘巴士前往弗朗茨约瑟夫，宿冰川附近">飞往霍基蒂卡，转乘巴士前往弗朗茨约瑟夫，宿冰川附近</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D4-5：弗朗茨约瑟夫冰川">D4-5：弗朗茨约瑟夫冰川</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="景区接驳车">景区接驳车</span></div>
+                                <div data-i18n="专业向导带领冰爪徒步，冰川探索，宿弗朗茨约瑟夫">专业向导带领冰爪徒步，冰川探索，宿弗朗茨约瑟夫</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D6-7：福克斯冰川">D6-7：福克斯冰川</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="旅游巴士（约30公里，40分钟）">旅游巴士（约30公里，40分钟）</span></div>
+                                <div data-i18n="福克斯冰川徒步，马瑟森湖徒步，宿福克斯">福克斯冰川徒步，马瑟森湖徒步，宿福克斯</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D8：福克斯→瓦纳卡">D8：福克斯→瓦纳卡</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="观光巴士（约270公里，4.5小时）">观光巴士（约270公里，4.5小时）</span></div>
+                                <div data-i18n="穿越哈斯特通道，瓦纳卡湖游览，宿瓦纳卡">穿越哈斯特通道，瓦纳卡湖游览，宿瓦纳卡</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D9-10：瓦纳卡→皇后镇">D9-10：瓦纳卡→皇后镇</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="旅游巴士（约65公里，1.5小时）">旅游巴士（约65公里，1.5小时）</span></div>
+                                <div data-i18n="本洛蒙德山徒步，皇后镇周边游览，行程结束（可从皇后镇机场返程）">本洛蒙德山徒步，皇后镇周边游览，行程结束（可从皇后镇机场返程）</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 新西兰全景旅行方案 -->
+        <section class="trip-section fade-in" id="full-newzealand">
+            <div class="trip-header">
+                <i class="fas fa-globe"></i>
+                <div>
+                    <h2 data-i18n="新西兰全景12日游标题">新西兰全景12日游</h2>
+                    <p data-i18n="新西兰全景12日游描述">乘坐豪华巴士、渡轮与飞机，畅游南北岛，体验新西兰全景风光，轻松舒适的跨岛旅行体验</p>
+                </div>
+            </div>
+
+            <!-- 全景路线地图 -->
+            <div class="route-map">
+                <div class="map-content">
+                    <img src="完整地图.jpg" alt="新西兰全景地图" class="map-image">
+                </div>
+            </div>
+
+            <div class="itinerary-cards">
+                <!-- 新西兰全景12日游 -->
+                <div class="itinerary-card">
+                    <img src="全1.jpg" alt="新西兰全景12日游" class="itinerary-image">
+                    <div class="itinerary-content">
+                        <h3 class="itinerary-title" data-i18n="新西兰全景12日游">新西兰全景12日游</h3>
+                        <div class="itinerary-meta">
+                            <div><i class="fas fa-calendar-alt"></i> <span data-i18n="12天11晚">12天11晚</span></div>
+                            <div><i class="fas fa-plane-departure"></i> <span data-i18n="出发地：奥克兰（有机场）">出发地：奥克兰（有机场）</span></div>
+                            <div><i class="fas fa-plane-arrival"></i> <span data-i18n="结束地：皇后镇（有机场）">结束地：皇后镇（有机场）</span></div>
+                            <div><i class="fas fa-utensils"></i> <span data-i18n="含特色美食体验">含特色美食体验</span></div>
+                            <div><i class="fas fa-route"></i> <span data-i18n="总行程约2200公里">总行程约2200公里</span></div>
+                        </div>
+                        
+                        <div class="transport-info">
+                            <h4><i class="fas fa-ship"></i> <span data-i18n="主要交通方式">主要交通方式</span></h4>
+                            <div class="transport-detail">
+                                <span><i class="fas fa-bus"></i> <span data-i18n="豪华观光巴士">豪华观光巴士</span></span>
+                                <span><i class="fas fa-ship"></i> <span data-i18n="库克海峡渡轮">库克海峡渡轮</span></span>
+                                <span><i class="fas fa-plane"></i> <span data-i18n="南岛内部航班（可选）">南岛内部航班（可选）</span></span>
+                            </div>
+                        </div>
+                        
+                        <p class="itinerary-description" data-i18n="全景行程描述">
+                            这条全景路线带您畅游新西兰南北岛，探访最具特色的小镇，深入体验当地风土人情与美食文化。乘坐豪华观光巴士，搭配渡轮跨岛，行程舒适且节奏适中，适合首次到访新西兰的游客。
+                        </p>
+                        
+                        <div class="highlights">
+                            <h4><i class="fas fa-star"></i> <span data-i18n="行程亮点">行程亮点</span></h4>
+                            <ul>
+                                <li data-i18n="全景亮点1">探访霍比特人村庄玛塔玛塔，感受童话世界</li>
+                                <li data-i18n="全景亮点2">在箭镇体验淘金乐趣，欣赏历史建筑</li>
+                                <li data-i18n="全景亮点3">游览水果小镇克伦威尔，品尝新鲜水果</li>
+                                <li data-i18n="全景亮点4">在凯库拉体验观鲸和海豚游泳</li>
+                                <li data-i18n="全景亮点5">参观葡萄酒产区马尔堡，品尝世界顶级长相思</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="daily-itinerary">
+                            <h4 data-i18n="每日行程概览">每日行程概览</h4>
+                            <div class="day-item">
+                                <strong data-i18n="D1-2：奥克兰及周边">D1-2：奥克兰及周边</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="旅游巴士（约160公里，2.5小时）">旅游巴士（约160公里，2.5小时）</span></div>
+                                <div data-i18n="奥克兰市区游览，霍比特人村庄参观，宿奥克兰">奥克兰市区游览，霍比特人村庄参观，宿奥克兰</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D3-4：奥克兰→罗托鲁瓦→陶波">D3-4：奥克兰→罗托鲁瓦→陶波</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="观光巴士（约335公里，5小时）">观光巴士（约335公里，5小时）</span></div>
+                                <div data-i18n="地热小镇与湖泊小镇体验，宿两地">地热小镇与湖泊小镇体验，宿两地</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D5-6：陶波→惠灵顿→皮克顿">D5-6：陶波→惠灵顿→皮克顿</strong>
+                                <div class="day-transport">
+                                    <i class="fas fa-bus"></i> <span data-i18n="巴士（约350公里，5小时）">巴士（约350公里，5小时）</span> + 
+                                    <i class="fas fa-ship"></i> <span data-i18n="渡轮（约3.5小时）">渡轮（约3.5小时）</span>
+                                </div>
+                                <div data-i18n="首都游览，库克海峡渡轮，马尔堡产区参观">首都游览，库克海峡渡轮，马尔堡产区参观</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D7-8：皮克顿→凯库拉→基督城">D7-8：皮克顿→凯库拉→基督城</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="观光巴士（约240公里，4小时）">观光巴士（约240公里，4小时）</span></div>
+                                <div data-i18n="海洋小镇生态体验，花园城市游览">海洋小镇生态体验，花园城市游览</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D9-10：基督城→瓦纳卡→克伦威尔">D9-10：基督城→瓦纳卡→克伦威尔</strong>
+                                <div class="day-transport">
+                                    <i class="fas fa-plane"></i> <span data-i18n="可选航班（1小时）">可选航班（1小时）</span> 或 
+                                    <i class="fas fa-bus"></i> <span data-i18n="巴士（约400公里，5.5小时）">巴士（约400公里，5.5小时）</span>
+                                </div>
+                                <div data-i18n="湖泊小镇与水果小镇游览">湖泊小镇与水果小镇游览</div>
+                            </div>
+                            <div class="day-item">
+                                <strong data-i18n="D11-12：克伦威尔→皇后镇→箭镇">D11-12：克伦威尔→皇后镇→箭镇</strong>
+                                <div class="day-transport"><i class="fas fa-bus"></i> <span data-i18n="观光巴士（约85公里，2小时）">观光巴士（约85公里，2小时）</span></div>
+                                <div data-i18n="淘金小镇体验，皇后镇休闲游览，行程结束">淘金小镇体验，皇后镇休闲游览，行程结束</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 旅行贴士 -->
+        <div class="travel-tips fade-in">
+            <h3><i class="fas fa-lightbulb"></i> <span data-i18n="旅行贴士">旅行贴士</span></h3>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h4><i class="fas fa-passport"></i> <span data-i18n="签证信息">签证信息</span></h4>
+                    <ul>
+                        <li data-i18n="签证贴士1">中国公民需提前申请新西兰旅游签证，建议至少提前1-2个月准备</li>
+                        <li data-i18n="签证贴士2">可在线申请电子签证，通常审理周期为15-20个工作日</li>
+                        <li data-i18n="签证贴士3">需提供在职证明、资金证明、行程计划等材料</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h4><i class="fas fa-suitcase"></i> <span data-i18n="行李准备">行李准备</span></h4>
+                    <ul>
+                        <li data-i18n="行李贴士1">新西兰气候多变，建议携带防风防雨外套和多层衣物</li>
+                        <li data-i18n="行李贴士2">徒步鞋是必备品，尤其是计划参加冰川徒步的旅行者</li>
+                        <li data-i18n="行李贴士3">夏季需携带防晒霜（SPF50+）、太阳镜和帽子</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h4><i class="fas fa-credit-card"></i> <span data-i18n="货币与消费">货币与消费</span></h4>
+                    <ul>
+                        <li data-i18n="货币贴士1">新西兰货币为新西兰元（NZD），1纽币约合4.5-5人民币（以实时汇率为准）</li>
+                        <li data-i18n="货币贴士2">主要城市和旅游区接受信用卡，偏远地区建议备现金</li>
+                        <li data-i18n="货币贴士3">餐饮和住宿需支付10-15%的小费（非强制）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <a href="../index.html" class="logo" style="color: white; margin-bottom: 1rem; display: inline-flex;">
+                    <i class="fas fa-globe-asia"></i>
+                    Travel NZ
+                </a>
+                <p data-i18n="为全球旅行者提供专业的新西兰旅游规划与预订服务">为全球旅行者提供专业的新西兰旅游规划与预订服务</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3 data-i18n="联系我们">联系我们</h3>
+                <p data-i18n="客服邮箱：service@travelnz.com">客服邮箱：service@travelnz.com</p>
+                <p data-i18n="24小时紧急热线：+64 27-888-8888">24小时紧急热线：+64 27-888-8888</p>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="© 2025 Travel NZ. 保留所有权利。">© 2025 Travel NZ. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 语言文本映射
+        const translations = {
+            zh: {
+                "首页": "首页",
+                "旅行产品": "旅行产品",
+                "联系我们": "联系我们",
+                "新西兰精选旅行方案": "新西兰精选旅行方案",
+                "intro-text": "新西兰由北岛和南岛组成，两岛各具特色。北岛以火山地热、毛利文化和现代化都市为特色；南岛则以壮丽的自然景观、冰川峡湾和户外探险闻名。以下为您精心设计的非自驾旅行方案，涵盖大巴、飞机、轮渡等多种交通方式，行程灵活舒适。",
+                "北岛深度7日游按钮": "北岛深度7日游",
+                "南岛冰川探险10日游按钮": "南岛冰川探险10日游",
+                "新西兰全景12日游按钮": "新西兰全景12日游",
+                "北岛深度7日游标题": "北岛深度7日游",
+                "北岛深度7日游描述": "乘坐大巴与短途航班，探索火山地热奇观，体验纯正毛利文化，感受现代都市与自然景观的完美融合",
+                "北岛深度7日游": "北岛深度7日游",
+                "7天6晚": "7天6晚",
+                "出发地：奥克兰（有机场）": "出发地：奥克兰（有机场）",
+                "结束地：惠灵顿（有机场）": "结束地：惠灵顿（有机场）",
+                "春秋季最佳（3-5月, 9-11月）": "春秋季最佳（3-5月, 9-11月）",
+                "总行程约1000公里": "总行程约1000公里",
+                "主要交通方式": "主要交通方式",
+                "豪华旅游大巴": "豪华旅游大巴",
+                "短途航班（惠灵顿返程可选）": "短途航班（惠灵顿返程可选）",
+                "当地接送": "当地接送",
+                "北岛行程描述": "这条深度路线从奥克兰出发，一路向南直至首都惠灵顿，全面体验北岛的自然景观与人文风情，适合时间充裕的旅行者。全程采用舒适大巴与短途航班结合的方式，轻松便捷。",
+                "行程亮点": "行程亮点",
+                "北岛亮点1": "在怀托摩萤火虫洞乘船观赏万千萤火虫的梦幻景象",
+                "北岛亮点2": "游览新西兰首都惠灵顿，参观国家博物馆",
+                "北岛亮点3": "探索汤加里罗国家公园的火山景观，徒步汤加里罗越山步道",
+                "北岛亮点4": "在东海岸品尝新鲜海鲜，体验小镇风情",
+                "北岛亮点5": "参观世界上最陡的街道鲍德温街",
+                "每日行程概览": "每日行程概览",
+                "D1-2：奥克兰及周边": "D1-2：奥克兰及周边",
+                "市内交通 + 短途巴士（约80公里，1.5小时）": "市内交通 + 短途巴士（约80公里，1.5小时）",
+                "市区游览，怀托摩萤火虫洞一日游，宿奥克兰": "市区游览，怀托摩萤火虫洞一日游，宿奥克兰",
+                "D3：奥克兰→罗托鲁瓦": "D3：奥克兰→罗托鲁瓦",
+                "豪华大巴（约230公里，3小时）": "豪华大巴（约230公里，3小时）",
+                "前往罗托鲁瓦，地热景观与毛利文化体验，宿罗托鲁瓦": "前往罗托鲁瓦，地热景观与毛利文化体验，宿罗托鲁瓦",
+                "D4：罗托鲁瓦→陶波": "D4：罗托鲁瓦→陶波",
+                "旅游巴士（约105公里，1.5小时）": "旅游巴士（约105公里，1.5小时）",
+                "陶波湖与胡卡瀑布游览，宿陶波": "陶波湖与胡卡瀑布游览，宿陶波",
+                "D5：陶波→汤加里罗": "D5：陶波→汤加里罗",
+                "短途巴士（约50公里，1小时）": "短途巴士（约50公里，1小时）",
+                "汤加里罗国家公园徒步，宿国家公园附近": "汤加里罗国家公园徒步，宿国家公园附近",
+                "D6：汤加里罗→惠灵顿": "D6：汤加里罗→惠灵顿",
+                "长途巴士（约350公里，5小时）": "长途巴士（约350公里，5小时）",
+                "前往惠灵顿，市区游览，宿惠灵顿": "前往惠灵顿，市区游览，宿惠灵顿",
+                "D7：惠灵顿": "D7：惠灵顿",
+                "市内交通": "市内交通",
+                "国家博物馆，鲍德温街参观，行程结束（可从惠灵顿机场返程）": "国家博物馆，鲍德温街参观，行程结束（可从惠灵顿机场返程）",
+                "南岛冰川探险10日游标题": "南岛冰川探险10日游",
+                "南岛冰川探险10日游描述": "结合飞机与专业旅游巴士，深入冰川地区，体验冰川徒步与峡湾风光，感受纯净原始的自然之美",
+                "南岛冰川探险10日游": "南岛冰川探险10日游",
+                "10天9晚": "10天9晚",
+                "出发地：基督城（有机场）": "出发地：基督城（有机场）",
+                "结束地：皇后镇（有机场）": "结束地：皇后镇（有机场）",
+                "冬季最佳（6-8月）": "冬季最佳（6-8月）",
+                "总行程约850公里": "总行程约850公里",
+                "内陆航班（基督城-霍基蒂卡）": "内陆航班（基督城-霍基蒂卡）",
+                "专业探险巴士": "专业探险巴士",
+                "峡湾游船": "峡湾游船",
+                "南岛行程描述": "这条专业路线专注于南岛壮观的冰川景观，从弗朗茨约瑟夫冰川到福克斯冰川，体验冰爪徒步的独特乐趣，感受大自然的鬼斧神工。行程采用飞机与专业探险巴士结合的方式，既节省时间又能深入偏远景区。",
+                "南岛亮点1": "弗朗茨约瑟夫冰川向导带领冰爪徒步",
+                "南岛亮点2": "福克斯冰川探索，参观冰川湖泊",
+                "南岛亮点3": "在马瑟森湖观赏库克山和塔斯曼山倒影",
+                "南岛亮点4": "徒步哈斯特通道，穿越温带雨林",
+                "南岛亮点5": "登顶本洛蒙德山，俯瞰皇后镇全景",
+                "D1-2：基督城": "D1-2：基督城",
+                "抵达基督城，城市游览与适应，宿基督城": "抵达基督城，城市游览与适应，宿基督城",
+                "D3：基督城→霍基蒂卡": "D3：基督城→霍基蒂卡",
+                "内陆航班（约50分钟）": "内陆航班（约50分钟）",
+                "飞往霍基蒂卡，转乘巴士前往弗朗茨约瑟夫，宿冰川附近": "飞往霍基蒂卡，转乘巴士前往弗朗茨约瑟夫，宿冰川附近",
+                "D4-5：弗朗茨约瑟夫冰川": "D4-5：弗朗茨约瑟夫冰川",
+                "景区接驳车": "景区接驳车",
+                "专业向导带领冰爪徒步，冰川探索，宿弗朗茨约瑟夫": "专业向导带领冰爪徒步，冰川探索，宿弗朗茨约瑟夫",
+                "D6-7：福克斯冰川": "D6-7：福克斯冰川",
+                "旅游巴士（约30公里，40分钟）": "旅游巴士（约30公里，40分钟）",
+                "福克斯冰川徒步，马瑟森湖徒步，宿福克斯": "福克斯冰川徒步，马瑟森湖徒步，宿福克斯",
+                "D8：福克斯→瓦纳卡": "D8：福克斯→瓦纳卡",
+                "观光巴士（约270公里，4.5小时）": "观光巴士（约270公里，4.5小时）",
+                "穿越哈斯特通道，瓦纳卡湖游览，宿瓦纳卡": "穿越哈斯特通道，瓦纳卡湖游览，宿瓦纳卡",
+                "D9-10：瓦纳卡→皇后镇": "D9-10：瓦纳卡→皇后镇",
+                "旅游巴士（约65公里，1.5小时）": "旅游巴士（约65公里，1.5小时）",
+                "本洛蒙德山徒步，皇后镇周边游览，行程结束（可从皇后镇机场返程）": "本洛蒙德山徒步，皇后镇周边游览，行程结束（可从皇后镇机场返程）",
+                "新西兰全景12日游标题": "新西兰全景12日游",
+                "新西兰全景12日游描述": "乘坐豪华巴士、渡轮与飞机，畅游南北岛，体验新西兰全景风光，轻松舒适的跨岛旅行体验",
+                "新西兰全景12日游": "新西兰全景12日游",
+                "12天11晚": "12天11晚",
+                "含特色美食体验": "含特色美食体验",
+                "总行程约2200公里": "总行程约2200公里",
+                "豪华观光巴士": "豪华观光巴士",
+                "库克海峡渡轮": "库克海峡渡轮",
+                "南岛内部航班（可选）": "南岛内部航班（可选）",
+                "全景行程描述": "这条全景路线带您畅游新西兰南北岛，探访最具特色的小镇，深入体验当地风土人情与美食文化。乘坐豪华观光巴士，搭配渡轮跨岛，行程舒适且节奏适中，适合首次到访新西兰的游客。",
+                "全景亮点1": "探访霍比特人村庄玛塔玛塔，感受童话世界",
+                "全景亮点2": "在箭镇体验淘金乐趣，欣赏历史建筑",
+                "全景亮点3": "游览水果小镇克伦威尔，品尝新鲜水果",
+                "全景亮点4": "在凯库拉体验观鲸和海豚游泳",
+                "全景亮点5": "参观葡萄酒产区马尔堡，品尝世界顶级长相思",
+                "旅游巴士（约160公里，2.5小时）": "旅游巴士（约160公里，2.5小时）",
+                "奥克兰市区游览，霍比特人村庄参观，宿奥克兰": "奥克兰市区游览，霍比特人村庄参观，宿奥克兰",
+                "D3-4：奥克兰→罗托鲁瓦→陶波": "D3-4：奥克兰→罗托鲁瓦→陶波",
+                "观光巴士（约335公里，5小时）": "观光巴士（约335公里，5小时）",
+                "地热小镇与湖泊小镇体验，宿两地": "地热小镇与湖泊小镇体验，宿两地",
+                "D5-6：陶波→惠灵顿→皮克顿": "D5-6：陶波→惠灵顿→皮克顿",
+                "巴士（约350公里，5小时）": "巴士（约350公里，5小时）",
+                "渡轮（约3.5小时）": "渡轮（约3.5小时）",
+                "首都游览，库克海峡渡轮，马尔堡产区参观": "首都游览，库克海峡渡轮，马尔堡产区参观",
+                "D7-8：皮克顿→凯库拉→基督城": "D7-8：皮克顿→凯库拉→基督城",
+                "观光巴士（约240公里，4小时）": "观光巴士（约240公里，4小时）",
+                "海洋小镇生态体验，花园城市游览": "海洋小镇生态体验，花园城市游览",
+                "D9-10：基督城→瓦纳卡→克伦威尔": "D9-10：基督城→瓦纳卡→克伦威尔",
+                "可选航班（1小时）": "可选航班（1小时）",
+                "巴士（约400公里，5.5小时）": "巴士（约400公里，5.5小时）",
+                "湖泊小镇与水果小镇游览": "湖泊小镇与水果小镇游览",
+                "D11-12：克伦威尔→皇后镇→箭镇": "D11-12：克伦威尔→皇后镇→箭镇",
+                "观光巴士（约85公里，2小时）": "观光巴士（约85公里，2小时）",
+                "淘金小镇体验，皇后镇休闲游览，行程结束": "淘金小镇体验，皇后镇休闲游览，行程结束",
+                "旅行贴士": "旅行贴士",
+                "签证信息": "签证信息",
+                "签证贴士1": "中国公民需提前申请新西兰旅游签证，建议至少提前1-2个月准备",
+                "签证贴士2": "可在线申请电子签证，通常审理周期为15-20个工作日",
+                "签证贴士3": "需提供在职证明、资金证明、行程计划等材料",
+                "行李准备": "行李准备",
+                "行李贴士1": "新西兰气候多变，建议携带防风防雨外套和多层衣物",
+                "行李贴士2": "徒步鞋是必备品，尤其是计划参加冰川徒步的旅行者",
+                "行李贴士3": "夏季需携带防晒霜（SPF50+）、太阳镜和帽子",
+                "货币与消费": "货币与消费",
+                "货币贴士1": "新西兰货币为新西兰元（NZD），1纽币约合4.5-5人民币（以实时汇率为准）",
+                "货币贴士2": "主要城市和旅游区接受信用卡，偏远地区建议备现金",
+                "货币贴士3": "餐饮和住宿需支付10-15%的小费（非强制）",
+                "为全球旅行者提供专业的新西兰旅游规划与预订服务": "为全球旅行者提供专业的新西兰旅游规划与预订服务",
+                "© 2025 Travel NZ. 保留所有权利。": "© 2025 Travel NZ. 保留所有权利。"
+            },
+            en: {
+                "首页": "Home",
+                "旅行产品": "Travel Products",
+                "联系我们": "Contact Us",
+                "新西兰精选旅行方案": "New Zealand Selected Travel Packages",
+                "intro-text": "New Zealand consists of the North Island and the South Island, each with its own unique characteristics. The North Island is known for volcanic geothermal features, Maori culture, and modern cities; the South Island is famous for its magnificent natural landscapes, glacial fjords, and outdoor adventures. Below are our carefully designed non-self-driving travel packages, covering various transportation methods such as buses, planes, and ferries, with flexible and comfortable itineraries.",
+                "北岛深度7日游按钮": "North Island in-depth 7-day tour",
+                "南岛冰川探险10日游按钮": "South Island Glacier Adventure 10-day tour",
+                "新西兰全景12日游按钮": "New Zealand Panoramic 12-day tour",
+                "北岛深度7日游标题": "North Island in-depth 7-day tour",
+                "北岛深度7日游描述": "Take buses and short-haul flights to explore volcanic geothermal wonders, experience authentic Maori culture, and enjoy the perfect blend of modern cities and natural landscapes",
+                "北岛深度7日游": "North Island in-depth 7-day tour",
+                "7天6晚": "7 days 6 nights",
+                "出发地：奥克兰（有机场）": "Departure: Auckland (with airport)",
+                "结束地：惠灵顿（有机场）": "Destination: Wellington (with airport)",
+                "春秋季最佳（3-5月, 9-11月）": "Best in spring and autumn (March-May, September-November)",
+                "总行程约1000公里": "Total distance: approximately 1000 km",
+                "主要交通方式": "Main transportation",
+                "豪华旅游大巴": "Luxury tour bus",
+                "短途航班（惠灵顿返程可选）": "Short-haul flights (Wellington return optional)",
+                "当地接送": "Local transfers",
+                "北岛行程描述": "This in-depth route starts from Auckland and goes south to the capital Wellington, offering a comprehensive experience of the North Island's natural landscapes and cultural customs, suitable for travelers with ample time. The entire journey combines comfortable buses and short-haul flights for ease and convenience.",
+                "行程亮点": "Itinerary highlights",
+                "北岛亮点1": "Take a boat tour in Waitomo Glowworm Caves to see thousands of glowworms creating a magical scene",
+                "北岛亮点2": "Visit New Zealand's capital Wellington and explore the National Museum",
+                "北岛亮点3": "Explore the volcanic landscapes of Tongariro National Park and hike the Tongariro Alpine Crossing",
+                "北岛亮点4": "Taste fresh seafood on the East Coast and experience small town charm",
+                "北岛亮点5": "Visit Baldwin Street, the steepest street in the world",
+                "每日行程概览": "Daily itinerary overview",
+                "D1-2：奥克兰及周边": "D1-2: Auckland and surroundings",
+                "市内交通 + 短途巴士（约80公里，1.5小时）": "City transport + short-distance bus (about 80km, 1.5 hours)",
+                "市区游览，怀托摩萤火虫洞一日游，宿奥克兰": "City tour, day trip to Waitomo Glowworm Caves, stay in Auckland",
+                "D3：奥克兰→罗托鲁瓦": "D3: Auckland → Rotorua",
+                "豪华大巴（约230公里，3小时）": "Luxury bus (about 230km, 3 hours)",
+                "前往罗托鲁瓦，地热景观与毛利文化体验，宿罗托鲁瓦": "Travel to Rotorua, experience geothermal landscapes and Maori culture, stay in Rotorua",
+                "D4：罗托鲁瓦→陶波": "D4: Rotorua → Taupo",
+                "旅游巴士（约105公里，1.5小时）": "Tourist bus (about 105km, 1.5 hours)",
+                "陶波湖与胡卡瀑布游览，宿陶波": "Visit Lake Taupo and Huka Falls, stay in Taupo",
+                "D5：陶波→汤加里罗": "D5: Taupo → Tongariro",
+                "短途巴士（约50公里，1小时）": "Short-distance bus (about 50km, 1 hour)",
+                "汤加里罗国家公园徒步，宿国家公园附近": "Hike in Tongariro National Park, stay near the national park",
+                "D6：汤加里罗→惠灵顿": "D6: Tongariro → Wellington",
+                "长途巴士（约350公里，5小时）": "Long-distance bus (about 350km, 5 hours)",
+                "前往惠灵顿，市区游览，宿惠灵顿": "Travel to Wellington, city tour, stay in Wellington",
+                "D7：惠灵顿": "D7: Wellington",
+                "市内交通": "City transport",
+                "国家博物馆，鲍德温街参观，行程结束（可从惠灵顿机场返程）": "National Museum, visit Baldwin Street, tour ends (return from Wellington Airport possible)",
+                "南岛冰川探险10日游标题": "South Island Glacier Adventure 10-day tour",
+                "南岛冰川探险10日游描述": "Combining flights and professional tour buses, delve into glacier areas, experience glacier hiking and fjord scenery, and feel the pure and original beauty of nature",
+                "南岛冰川探险10日游": "South Island Glacier Adventure 10-day tour",
+                "10天9晚": "10 days 9 nights",
+                "出发地：基督城（有机场）": "Departure: Christchurch (with airport)",
+                "结束地：皇后镇（有机场）": "Destination: Queenstown (with airport)",
+                "冬季最佳（6-8月）": "Best in winter (June-August)",
+                "总行程约850公里": "Total distance: approximately 850 km",
+                "内陆航班（基督城-霍基蒂卡）": "Domestic flight (Christchurch-Hokitika)",
+                "专业探险巴士": "Professional adventure bus",
+                "峡湾游船": "Fjord cruise",
+                "南岛行程描述": "This professional route focuses on the spectacular glacier landscapes of the South Island, from Franz Josef Glacier to Fox Glacier, offering the unique experience of ice hiking with crampons and feeling the wonders of nature. The itinerary combines flights and professional adventure buses, saving time while accessing remote scenic areas.",
+                "南岛亮点1": "Guided ice hiking with crampons on Franz Josef Glacier",
+                "南岛亮点2": "Explore Fox Glacier and visit glacial lakes",
+                "南岛亮点3": "View the reflections of Aoraki/Mount Cook and Mount Tasman in Lake Matheson",
+                "南岛亮点4": "Hike the Haast Pass and traverse temperate rainforests",
+                "南岛亮点5": "Climb Ben Lomond and enjoy panoramic views of Queenstown",
+                "D1-2：基督城": "D1-2: Christchurch",
+                "抵达基督城，城市游览与适应，宿基督城": "Arrive in Christchurch, city tour and acclimatization, stay in Christchurch",
+                "D3：基督城→霍基蒂卡": "D3: Christchurch → Hokitika",
+                "内陆航班（约50分钟）": "Domestic flight (about 50 minutes)",
+                "飞往霍基蒂卡，转乘巴士前往弗朗茨约瑟夫，宿冰川附近": "Fly to Hokitika, transfer by bus to Franz Josef, stay near the glacier",
+                "D4-5：弗朗茨约瑟夫冰川": "D4-5: Franz Josef Glacier",
+                "景区接驳车": "Scenic area shuttle bus",
+                "专业向导带领冰爪徒步，冰川探索，宿弗朗茨约瑟夫": "Professional guide-led ice hiking with crampons, glacier exploration, stay in Franz Josef",
+                "D6-7：福克斯冰川": "D6-7: Fox Glacier",
+                "旅游巴士（约30公里，40分钟）": "Tourist bus (about 30km, 40 minutes)",
+                "福克斯冰川徒步，马瑟森湖徒步，宿福克斯": "Fox Glacier hike, Lake Matheson walk, stay in Fox Glacier",
+                "D8：福克斯→瓦纳卡": "D8: Fox Glacier → Wanaka",
+                "观光巴士（约270公里，4.5小时）": "Sightseeing bus (about 270km, 4.5 hours)",
+                "穿越哈斯特通道，瓦纳卡湖游览，宿瓦纳卡": "Cross Haast Pass, visit Lake Wanaka, stay in Wanaka",
+                "D9-10：瓦纳卡→皇后镇": "D9-10: Wanaka → Queenstown",
+                "旅游巴士（约65公里，1.5小时）": "Tourist bus (about 65km, 1.5 hours)",
+                "本洛蒙德山徒步，皇后镇周边游览，行程结束（可从皇后镇机场返程）": "Ben Lomond hike, Queenstown surroundings tour, tour ends (return from Queenstown Airport possible)",
+                "新西兰全景12日游标题": "New Zealand Panoramic 12-day tour",
+                "新西兰全景12日游描述": "Travel through both North and South Islands by luxury bus, ferry and plane, experience New Zealand's panoramic scenery with a comfortable inter-island travel experience",
+                "新西兰全景12日游": "New Zealand Panoramic 12-day tour",
+                "12天11晚": "12 days 11 nights",
+                "含特色美食体验": "Including specialty food experiences",
+                "总行程约2200公里": "Total distance: approximately 2200 km",
+                "豪华观光巴士": "Luxury sightseeing bus",
+                "库克海峡渡轮": "Cook Strait ferry",
+                "南岛内部航班（可选）": "South Island internal flights (optional)",
+                "全景行程描述": "This panoramic route takes you through both North and South Islands of New Zealand, visiting the most distinctive towns and deeply experiencing local customs and food culture. Travel by luxury sightseeing bus with inter-island ferry crossings, offering a comfortable and well-paced itinerary suitable for first-time visitors to New Zealand.",
+                "全景亮点1": "Visit Hobbiton Movie Set in Matamata and experience a fairy-tale world",
+                "全景亮点2": "Experience gold panning fun in Arrowtown and admire historic buildings",
+                "全景亮点3": "Visit Cromwell, the fruit town, and taste fresh fruits",
+                "全景亮点4": "Experience whale watching and dolphin swimming in Kaikoura",
+                "全景亮点5": "Visit the Marlborough wine region and taste world-class Sauvignon Blanc",
+                "旅游巴士（约160公里，2.5小时）": "Tourist bus (about 160km, 2.5 hours)",
+                "奥克兰市区游览，霍比特人村庄参观，宿奥克兰": "Auckland city tour, visit Hobbiton, stay in Auckland",
+                "D3-4：奥克兰→罗托鲁瓦→陶波": "D3-4: Auckland → Rotorua → Taupo",
+                "观光巴士（约335公里，5小时）": "Sightseeing bus (about 335km, 5 hours)",
+                "地热小镇与湖泊小镇体验，宿两地": "Geothermal town and lake town experiences, stay in both places",
+                "D5-6：陶波→惠灵顿→皮克顿": "D5-6: Taupo → Wellington → Picton",
+                "巴士（约350公里，5小时）": "Bus (about 350km, 5 hours)",
+                "渡轮（约3.5小时）": "Ferry (about 3.5 hours)",
+                "首都游览，库克海峡渡轮，马尔堡产区参观": "Capital tour, Cook Strait ferry, visit Marlborough wine region",
+                "D7-8：皮克顿→凯库拉→基督城": "D7-8: Picton → Kaikoura → Christchurch",
+                "观光巴士（约240公里，4小时）": "Sightseeing bus (about 240km, 4 hours)",
+                "海洋小镇生态体验，花园城市游览": "Marine town ecological experience, garden city tour",
+                "D9-10：基督城→瓦纳卡→克伦威尔": "D9-10: Christchurch → Wanaka → Cromwell",
+                "可选航班（1小时）": "Optional flight (1 hour)",
+                "巴士（约400公里，5.5小时）": "Bus (about 400km, 5.5 hours)",
+                "湖泊小镇与水果小镇游览": "Lake town and fruit town tour",
+                "D11-12：克伦威尔→皇后镇→箭镇": "D11-12: Cromwell → Queenstown → Arrowtown",
+                "观光巴士（约85公里，2小时）": "Sightseeing bus (about 85km, 2 hours)",
+                "淘金小镇体验，皇后镇休闲游览，行程结束": "Gold rush town experience, Queenstown leisure tour, tour ends",
+                "旅行贴士": "Travel Tips",
+                "签证信息": "Visa Information",
+                "签证贴士1": "Chinese citizens need to apply for a New Zealand tourist visa in advance, preferably 1-2 months before travel",
+                "签证贴士2": "Electronic visa applications are available online, with a usual processing time of 15-20 working days",
+                "签证贴士3": "Employment certificate, financial proof, and itinerary plan are required",
+                "行李准备": "Luggage Preparation",
+                "行李贴士1": "New Zealand's climate is changeable; it is recommended to bring windproof and waterproof jackets and layered clothing",
+                "行李贴士2": "Hiking shoes are essential, especially for travelers planning to participate in glacier hiking",
+                "行李贴士3": "In summer, bring sunscreen (SPF50+), sunglasses, and a hat",
+                "货币与消费": "Currency and Consumption",
+                "货币贴士1": "New Zealand's currency is the New Zealand Dollar (NZD), with approximately 4.5-5 RMB to 1 NZD (subject to real-time exchange rates)",
+                "货币贴士2": "Credit cards are accepted in major cities and tourist areas; cash is recommended for remote areas",
+                "货币贴士3": "A 10-15% tip is customary for dining and accommodation (not mandatory)",
+                "为全球旅行者提供专业的新西兰旅游规划与预订服务": "Providing professional New Zealand travel planning and booking services for global travelers",
+                "© 2025 Travel NZ. 保留所有权利。": "© 2025 Travel NZ. All rights reserved."
+            }
+        };
+
+        // 语言切换功能
+        function setLanguage(lang) {
+            // 更新语言按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // 更新页面文本
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+        }
+
+        // 旅行方案切换功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化语言切换事件
+            document.querySelectorAll('.lang-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const lang = button.getAttribute('data-lang');
+                    setLanguage(lang);
+                });
+            });
+            
+            // 旅行方案切换
+            const tabButtons = document.querySelectorAll('.trip-tab-btn');
+            const tripSections = document.querySelectorAll('.trip-section');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // 移除所有按钮的active类
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    // 给当前点击的按钮添加active类
+                    button.classList.add('active');
+                    
+                    // 获取目标tab的ID
+                    const targetTab = button.getAttribute('data-tab');
+                    
+                    // 隐藏所有行程内容
+                    tripSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    // 显示目标行程内容
+                    document.getElementById(targetTab).classList.add('active');
+                    
+                    // 滚动到页面顶部
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // 导航栏滚动效果
+            window.addEventListener('scroll', () => {
+                const nav = document.querySelector('.nav');
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+            });
+            
+            // 滚动动画
+            function checkFadeElements() {
+                const fadeElements = document.querySelectorAll('.fade-in');
+                
+                fadeElements.forEach((element, index) => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 10;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        // 为元素添加延迟，创建级联效果
+                        setTimeout(() => {
+                            element.classList.add('visible');
+                        }, index * 10);
+                    }
+                });
+            }
+            
+            // 初始检查和滚动时检查
+            window.addEventListener('load', checkFadeElements);
+            window.addEventListener('scroll', checkFadeElements);
+        });
+		
+		        // 初始化页面为英文
+        document.addEventListener('DOMContentLoaded', () => {
+            setLanguage('en');
+        });
+    </script>
+</body>
+</html>
