@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel NZ - 新西兰旅游首页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #3182ce;
+            --primary-dark: #2b6cb0;
+            --secondary: #1a365d;
+            --accent: #90cdf4;
+            --light: #f7fafc;
+            --dark: #2d3748;
+            --text: #4a5568;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e6f0ff 0%, #f0f7ff 50%, #e6f0ff 100%);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* 高级导航栏 */
+        .nav {
+            width: 100%;
+            background-color: transparent;
+            padding: 1.5rem 0;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .nav.scrolled {
+            background-color: rgba(26, 54, 93, 0.98);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            letter-spacing: -0.5px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .logo::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .logo:hover::before {
+            width: 100%;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            transform: rotate(-15deg);
+            transition: transform 0.5s ease;
+        }
+        
+        .logo:hover i {
+            transform: rotate(0deg) scale(1.1);
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-menu li {
+            margin-left: 2.5rem;
+            position: relative;
+        }
+        
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+        
+        .nav-menu a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-menu a:hover::before {
+            width: 100%;
+        }
+        
+        /* 语言切换按钮 */
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-left: 2.5rem;
+        }
+        
+        .lang-btn {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            color: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .lang-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .lang-btn:hover::before {
+            left: 100%;
+        }
+        
+        .lang-btn.active {
+            background: white;
+            color: var(--secondary);
+            border-color: white;
+            transform: scale(1.05);
+        }
+        
+        /* 优化后的英雄区域 */
+        .hero {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 54, 93, 0.7), rgba(0, 0, 0, 0.5));
+            z-index: 1;
+        }
+        
+        /* 简化背景照片轮播 */
+        .hero-slideshow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-position: center;
+            background-size: cover;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            filter: brightness(0.8);
+        }
+        
+        .hero-slide.active {
+            opacity: 1;
+            filter: brightness(1);
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            padding: 2rem;
+            z-index: 2;
+            transform: translateY(30px);
+            animation: fadeUp 1s forwards 0.5s;
+            opacity: 0;
+        }
+        
+        .hero h1 {
+            color: white;
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            letter-spacing: -1px;
+            line-height: 1.1;
+            position: relative;
+            display: inline-block;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .hero-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 8px 25px rgba(49, 130, 206, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .hero-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(49, 130, 206, 0.6);
+        }
+        
+        .hero-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* 优化后的快速导航按钮 */
+        .quick-nav {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 900;
+        }
+        
+        .nav-btn {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-btn:nth-child(2) {
+            background: var(--gradient-2);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+        }
+        
+        .nav-btn:nth-child(3) {
+            background: var(--gradient-3);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+        
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-8px) scale(1.1);
+        }
+        
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+        
+        .nav-btn i {
+            font-size: 1.5rem;
+            z-index: 2;
+        }
+        
+        .nav-btn .btn-text {
+            position: absolute;
+            right: 80px;
+            background: rgba(26, 54, 93, 0.95);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.3s;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-size: 1rem;
+        }
+        
+        .nav-btn:hover .btn-text {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* 高级内容区域 */
+        .section {
+            position: relative;
+            padding: 10rem 0;
+            overflow: hidden;
+        }
+        
+        .section-light {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        }
+        
+        .section-medium {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .section-dark {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 6rem;
+            color: var(--secondary);
+            font-size: 3rem;
+            font-weight: 800;
+            position: relative;
+            padding-bottom: 2rem;
+            letter-spacing: -1px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 5px;
+            background: var(--gradient-1);
+            border-radius: 3px;
+        }
+        
+        /* 南北岛标题样式 - 修改为更显眼 */
+        .island-title {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin: 6rem 0 3rem;
+            text-align: center;
+            font-weight: 800;
+            position: relative;
+            padding-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .island-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 5px;
+            background: var(--gradient-2);
+            border-radius: 3px;
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+        }
+        
+        /* 高级景点布局 */
+        .attractions {
+            display: flex;
+            flex-direction: column;
+            gap: 8rem;
+            margin-bottom: 6rem;
+        }
+        
+        .attraction-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            position: relative;
+        }
+        
+        .attraction-item:nth-child(even) {
+            direction: rtl;
+        }
+        
+        .attraction-item:nth-child(even) .attraction-content {
+            direction: ltr;
+        }
+        
+        /* 简化图片效果 */
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s ease;
+        }
+        
+        .image-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.2);
+        }
+        
+        .attraction-image {
+            width: 100%;
+            height: 550px;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        
+        .image-container:hover .attraction-image {
+            transform: scale(1.05);
+        }
+        
+        .image-hint {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            font-size: 0.9rem;
+            color: white;
+            background: rgba(26, 54, 93, 0.9);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            z-index: 3;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .attraction-content {
+            padding: 3rem;
+            position: relative;
+        }
+        
+        .attraction-content h3 {
+            color: var(--secondary);
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 800;
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+        
+        .attraction-content h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background: var(--gradient-1);
+            border-radius: 3px;
+        }
+        
+        .attraction-content p {
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            color: var(--text);
+            font-size: 1.2rem;
+        }
+        
+        .attraction-highlights {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 5px solid var(--primary);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+        
+        .attraction-highlights h4 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .attraction-highlights ul {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            color: var(--text);
+        }
+        
+        .attraction-highlights li {
+            padding: 0.8rem 0;
+            position: relative;
+            padding-left: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .attraction-highlights li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        /* 高级特色体验 - 3D时间轴 */
+        .timeline-experiences {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 0;
+        }
+
+        .timeline-experiences::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: var(--gradient-1);
+            transform: translateX(-50%);
+            border-radius: 3px;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 8rem;
+            position: relative;
+            width: 100%;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+            border: 5px solid white;
+            transition: all 0.4s ease;
+        }
+
+        .timeline-marker:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .timeline-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 4rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            direction: rtl;
+        }
+
+        .timeline-item:nth-child(even) .timeline-text {
+            direction: ltr;
+        }
+
+        /* 简化时间轴图片效果 */
+        .timeline-image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .timeline-image-container:hover {
+            transform: scale(1.02);
+        }
+
+        .timeline-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .timeline-image-container:hover .timeline-image {
+            transform: scale(1.05);
+        }
+
+        .timeline-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .timeline-text h3 {
+            color: var(--secondary);
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            font-weight: 800;
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .timeline-text h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70px;
+            height: 5px;
+            background: var(--gradient-1);
+            border-radius: 3px;
+        }
+
+        .timeline-text p {
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 2.5rem;
+            font-size: 1.2rem;
+        }
+
+        .experience-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+        }
+
+        .experience-tag {
+            background: var(--gradient-1);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .experience-tag:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        /* 高级文化体验 - 悬浮卡片 */
+        .culture-circle-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 5rem;
+            padding: 4rem 0;
+        }
+
+        .culture-circle-item {
+            text-align: center;
+            padding: 3rem 2rem;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .culture-circle-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-1);
+            border-radius: 25px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .culture-circle-item:hover {
+            transform: translateY(-20px) scale(1.05);
+        }
+
+        .culture-circle-item:hover::before {
+            opacity: 0.1;
+        }
+
+        .circle-container {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        /* 简化圆形图片效果 */
+        .circle-image-wrapper {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+            border: 5px solid white;
+        }
+
+        .culture-circle-item:hover .circle-image-wrapper {
+            transform: scale(1.05);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.3);
+        }
+
+        .circle-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .circle-image-wrapper:hover .circle-image {
+            transform: scale(1.1);
+        }
+
+        .circle-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 54, 93, 0.9), rgba(49, 130, 206, 0.9));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.5s ease;
+            border-radius: 50%;
+            transform: scale(0.8);
+        }
+
+        .circle-image-wrapper:hover .circle-overlay {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .circle-overlay h3 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 2rem;
+            transform: translateY(20px);
+            transition: transform 0.5s ease;
+        }
+
+        .circle-image-wrapper:hover .circle-overlay h3 {
+            transform: translateY(0);
+        }
+
+        .circle-content {
+            padding: 0 1.5rem;
+        }
+
+        .circle-content p {
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .culture-circle-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .circle-tag {
+            background: var(--gradient-1);
+            color: white;
+            padding: 0.7rem 1.3rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .circle-tag:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        /* 高级旅行小贴士 */
+        .travel-tips {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 4rem;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            margin-bottom: 6rem;
+            position: relative;
+            overflow: hidden;
+            border-left: 8px solid var(--primary);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        .travel-tips::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .travel-tips ul {
+            line-height: 2;
+            font-size: 1.2rem;
+            color: var(--text);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .travel-tips li {
+            padding: 1.5rem;
+            background: rgba(247, 250, 252, 0.8);
+            border-radius: 15px;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .travel-tips li:hover {
+            background: rgba(237, 242, 247, 0.95);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .travel-tips li strong {
+            color: var(--secondary);
+            display: block;
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        /* 高级页脚 */
+        .footer {
+            width: 100%;
+            background: linear-gradient(135deg, var(--secondary), #0f1f38);
+            color: white;
+            padding: 6rem 0 2rem;
+            margin-top: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%231a365d"><polygon points="0,0 0,100 1000,100 1000,20 800,50 600,10 400,60 200,30 0,70"/></svg>');
+            background-size: cover;
+            opacity: 0.1;
+        }
+        
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .footer-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+            padding: 0.5rem 0;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+            transform: translateX(10px);
+        }
+        
+        .footer p {
+            margin-top: 1.5rem;
+            color: #a0aec0;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .footer-bottom {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding-top: 4rem;
+            margin-top: 4rem;
+            border-top: 1px solid #2d3748;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .social-links a {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(49, 130, 206, 0.4);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 1200px) {
+            .hero h1 {
+                font-size: 3.8rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .attraction-content h3 {
+                font-size: 2.2rem;
+            }
+            
+            .island-title {
+                font-size: 2.5rem;
+                margin: 5rem 0 2.5rem;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+            
+            .attraction-item {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+            
+            .attraction-item:nth-child(even) {
+                direction: ltr;
+            }
+            
+            .image-container {
+                transform: none !important;
+            }
+            
+            .timeline-experiences::before {
+                left: 30px;
+            }
+            
+            .timeline-marker {
+                left: 30px;
+            }
+            
+            .timeline-content {
+                width: calc(100% - 100px);
+                margin-left: 100px;
+                grid-template-columns: 1fr;
+                transform: none;
+            }
+            
+            .timeline-item:nth-child(even) .timeline-content {
+                direction: ltr;
+            }
+            
+            .culture-circle-layout {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 4rem;
+            }
+            
+            .island-title {
+                font-size: 2.2rem;
+                margin: 4rem 0 2rem;
+            }
+            
+            .island-title::after {
+                width: 120px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                padding: 0 1.5rem;
+            }
+            
+            .nav-menu {
+                margin-top: 2rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-menu li {
+                margin: 0.5rem 1rem;
+            }
+            
+            .hero {
+                height: 90vh;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .section {
+                padding: 6rem 0;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+                margin-bottom: 4rem;
+            }
+            
+            .travel-tips {
+                padding: 2.5rem;
+            }
+            
+            .travel-tips ul {
+                grid-template-columns: 1fr;
+            }
+            
+            .attraction-highlights ul {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-nav {
+                display: none;
+            }
+            
+            .timeline-experiences {
+                padding: 4rem 0;
+            }
+            
+            .timeline-experiences::before {
+                left: 20px;
+            }
+            
+            .timeline-marker {
+                left: 20px;
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .timeline-content {
+                width: calc(100% - 80px);
+                margin-left: 80px;
+                padding: 2.5rem;
+            }
+            
+            .timeline-image {
+                height: 300px;
+            }
+            
+            .culture-circle-layout {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .circle-image-wrapper {
+                width: 240px;
+                height: 240px;
+            }
+            
+            .island-title {
+                font-size: 1.8rem;
+                margin: 3rem 0 1.5rem;
+                padding-bottom: 1rem;
+            }
+            
+            .island-title::after {
+                width: 100px;
+                height: 4px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-btn {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .attraction-content {
+                padding: 1.5rem;
+            }
+            
+            .attraction-content h3 {
+                font-size: 1.8rem;
+            }
+            
+            .timeline-content {
+                padding: 2rem;
+            }
+            
+            .timeline-text h3 {
+                font-size: 1.8rem;
+            }
+            
+            .island-title {
+                font-size: 1.6rem;
+                margin: 2.5rem 0 1.2rem;
+            }
+            
+            .island-title::after {
+                width: 80px;
+            }
+        }
+        
+        /* 高级动画效果 */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-pulse {
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 滚动进度条 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: var(--gradient-1);
+            z-index: 1001;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- 滚动进度条 -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- 导航栏 -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">
+                <i class="fas fa-globe-asia"></i>
+                Travel NZ
+            </a>
+            <ul class="nav-menu">
+                <div class="lang-switch">
+                    <button class="lang-btn active" data-lang="zh">中文</button>
+                    <button class="lang-btn" data-lang="en">English</button>
+                </div>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="travelproducts.html">Travel Products</a></li>
+              <li><a href="contactus.html">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 优化后的英雄区域 -->
+    <div class="hero">
+        <div class="hero-overlay"></div>
+        
+        <!-- 背景照片轮播 -->
+        <div class="hero-slideshow">
+            <div class="hero-slide active" style="background-image: url('photo2.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('photo1.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('photo3.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('photo4.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('photo5.jpg');"></div>
+        </div>
+        
+        <div class="hero-content">
+            <h1 data-i18n="探索新西兰的自然奇观"></h1>
+            <p data-i18n="发现纯净自然与独特文化的完美融合，开启您的难忘旅程"></p>
+            <button class="hero-btn" data-i18n="开启探索之旅" id="exploreBtn">
+                <span data-i18n="开启探索之旅"></span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 优化后的快速导航按钮 -->
+    <div class="quick-nav">
+        <button class="nav-btn" id="navAttractions">
+            <i class="fas fa-mountain"></i>
+            <span class="btn-text" data-i18n="旅游景点"></span>
+        </button>
+        <button class="nav-btn" id="navFeatures">
+            <i class="fas fa-star"></i>
+            <span class="btn-text" data-i18n="特色体验"></span>
+        </button>
+        <button class="nav-btn" id="navCulture">
+            <i class="fas fa-landmark"></i>
+            <span class="btn-text" data-i18n="文化体验"></span>
+        </button>
+    </div>
+
+    <!-- 景点板块 -->
+    <section class="section section-light" id="attractions-section">
+        <div class="container">
+            <h2 class="section-title fade-in" data-i18n="新西兰旅游景点"></h2>
+            
+            <!-- 北岛景点 -->
+            <h3 class="island-title fade-in" data-i18n="北岛（North Island）"></h3>
+            <div class="attractions">
+                <!-- 奥克兰 -->
+                <div class="attraction-item fade-in">
+                    <div class="image-container">
+                        <img src="奥克兰.jpg" alt="奥克兰" class="attraction-image">
+                        <div class="image-hint" data-i18n="奥克兰城市风光"></div>
+                    </div>
+                    <div class="attraction-content">
+                        <h3 data-i18n="奥克兰（Auckland）"></h3>
+                        <p data-i18n="新西兰最大城市，拥有超过50座火山锥，是全球拥有帆船比例最高的城市，被誉为'千帆之都'。"></p>
+                        <div class="attraction-highlights">
+                            <h4 data-i18n="必游景点"></h4>
+                            <ul>
+                                <li data-i18n="天空塔（Sky Tower）- 城市地标，可高空漫步"></li>
+                                <li data-i18n="伊甸山（Mount Eden）- 休眠火山，俯瞰全城"></li>
+                                <li data-i18n="德文波特（Devonport）- 历史小镇与海滩"></li>
+                                <li data-i18n="豪拉基湾岛屿巡游"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 罗托鲁瓦 -->
+                <div class="attraction-item fade-in">
+                    <div class="image-container">
+                        <img src="罗托鲁瓦.jpg" alt="罗托鲁瓦" class="attraction-image">
+                        <div class="image-hint" data-i18n="罗托鲁瓦地热景观"></div>
+                    </div>
+                    <div class="attraction-content">
+                        <h3 data-i18n="罗托鲁瓦（Rotorua）"></h3>
+                        <p data-i18n="新西兰著名的地热城市，以硫磺温泉、间歇泉和浓厚的毛利文化闻名于世。"></p>
+                        <div class="attraction-highlights">
+                            <h4 data-i18n="必游景点"></h4>
+                            <ul>
+                                <li data-i18n="华卡雷瓦雷瓦地热保护区"></li>
+                                <li data-i18n="波利尼西亚温泉（世界顶级温泉）"></li>
+                                <li data-i18n="毛利文化村与传统表演"></li>
+                                <li data-i18n="红杉林步道"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 陶波湖 -->
+                <div class="attraction-item fade-in">
+                    <div class="image-container">
+                        <img src="陶波湖.jpg" alt="陶波湖" class="attraction-image">
+                        <div class="image-hint" data-i18n="陶波湖与火山景观"></div>
+                    </div>
+                    <div class="attraction-content">
+                        <h3 data-i18n="陶波湖（Lake Taupo）"></h3>
+                        <p data-i18n="由火山喷发形成的新西兰最大湖泊，湖面积几乎相当于新加坡，是水上活动的天堂。"></p>
+                        <div class="attraction-highlights">
+                            <h4 data-i18n="必游景点"></h4>
+                            <ul>
+                                <li data-i18n="胡卡瀑布（Huka Falls）"></li>
+                                <li data-i18n="汤加里罗国家公园（世界双遗产）"></li>
+                                <li data-i18n="湖钓（特别适合钓三文鱼）"></li>
+                                <li data-i18n="怀拉基火山谷"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 南岛景点 -->
+            <h3 class="island-title fade-in" data-i18n="南岛（South Island）"></h3>
+            <div class="attractions">
+                <!-- 皇后镇 -->
+                <div class="attraction-item fade-in">
+                    <div class="image-container">
+                        <img src="皇后镇.jpg" alt="皇后镇" class="attraction-image">
+                        <div class="image-hint" data-i18n="皇后镇湖景"></div>
+                    </div>
+                    <div class="attraction-content">
+                        <h3 data-i18n="皇后镇（Queenstown）"></h3>
+                        <p data-i18n="南半球的冒险之都，坐落在瓦卡蒂普湖湖畔，四周环绕壮丽的南阿尔卑斯山。"></p>
+                        <div class="attraction-highlights">
+                            <h4 data-i18n="必游景点"></h4>
+                            <ul>
+                                <li data-i18n="卡瓦劳大桥蹦极（世界蹦极发源地）"></li>
+                                <li data-i18n="米尔福德峡湾一日游"></li>
+                                <li data-i18n="箭镇（历史淘金小镇）"></li>
+                                <li data-i18n="卓越山脉滑雪场"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 基督城 -->
+                <div class="attraction-item fade-in">
+                    <div class="image-container">
+                        <img src="基督城.jpg" alt="基督城" class="attraction-image">
+                        <div class="image-hint" data-i18n="基督城花园"></div>
+                    </div>
+                    <div class="attraction-content">
+                        <h3 data-i18n="基督城（Christchurch）"></h3>
+                        <p data-i18n="南岛最大城市，被誉为'花园城市'，融合了英式建筑与现代设计，是探索南岛的门户。"></p>
+                        <div class="attraction-highlights">
+                            <h4 data-i18n="必游景点"></h4>
+                            <ul>
+                                <li data-i18n="基督城植物园"></li>
+                                <li data-i18n="雅芳河撑篙"></li>
+                                <li data-i18n="纸板大教堂"></li>
+                                <li data-i18n="利特尔顿港"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 米尔福德峡湾 -->
+                <div class="attraction-item fade-in">
+                    <div class="image-container">
+                        <img src="米尔福德峡湾.jpg" alt="米尔福德峡湾" class="attraction-image">
+                        <div class="image-hint" data-i18n="米尔福德峡湾瀑布"></div>
+                    </div>
+                    <div class="attraction-content">
+                        <h3 data-i18n="米尔福德峡湾（Milford Sound）"></h3>
+                        <p data-i18n="世界自然遗产，被称为'世界第八大奇迹'，是新西兰最著名的自然景观之一。"></p>
+                        <div class="attraction-highlights">
+                            <h4 data-i18n="必游景点"></h4>
+                            <ul>
+                                <li data-i18n="斯特林瀑布与 Bowen 瀑布"></li>
+                                <li data-i18n="塔斯曼海出海口"></li>
+                                <li data-i18n="水下观测站（观赏黑珊瑚）"></li>
+                                <li data-i18n="米尔福德步道（世界顶级徒步路线）"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特色体验板块 -->
+    <section class="section section-medium" id="features-section">
+        <div class="container">
+            <h2 class="section-title fade-in" data-i18n="新西兰特色体验"></h2>
+            
+            <div class="timeline-experiences">
+                <!-- 冰川探险 -->
+                <div class="timeline-item fade-in">
+                    <div class="timeline-marker">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-image-container">
+                            <img src="冰川探险.jpg" alt="冰川探险" class="timeline-image">
+                            <div class="image-hint" data-i18n="冰川探险"></div>
+                        </div>
+                        <div class="timeline-text">
+                            <h3 data-i18n="冰川探险"></h3>
+                            <p data-i18n="踏上壮观的福克斯冰川或弗朗兹约瑟夫冰川，体验冰川徒步、直升机观光等独特活动，感受冰雪世界的震撼与纯净。"></p>
+                            <div class="experience-tags">
+                                <span class="experience-tag" data-i18n="冰川徒步"></span>
+                                <span class="experience-tag" data-i18n="直升机观光"></span>
+                                <span class="experience-tag" data-i18n="冰洞探索"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 观星之旅 -->
+                <div class="timeline-item fade-in">
+                    <div class="timeline-marker">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-text">
+                            <h3 data-i18n="观星之旅"></h3>
+                            <p data-i18n="前往蒂卡普湖，在世界最大的暗夜星空保护区仰望璀璨星空，体验专业天文望远镜观测，感受宇宙的浩瀚与神秘。"></p>
+                            <div class="experience-tags">
+                                <span class="experience-tag" data-i18n="暗夜星空"></span>
+                                <span class="experience-tag" data-i18n="天文观测"></span>
+                                <span class="experience-tag" data-i18n="星空摄影"></span>
+                            </div>
+                        </div>
+                        <div class="timeline-image-container">
+                            <img src="观星之旅.jpg" alt="观星之旅" class="timeline-image">
+                            <div class="image-hint" data-i18n="观星之旅"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 霍比特村 -->
+                <div class="timeline-item fade-in">
+                    <div class="timeline-marker">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-image-container">
+                            <img src="霍比特人村.jpg" alt="霍比特村" class="timeline-image">
+                            <div class="image-hint" data-i18n="霍比特村"></div>
+                        </div>
+                        <div class="timeline-text">
+                            <h3 data-i18n="霍比特村之旅"></h3>
+                            <p data-i18n="探访《指环王》与《霍比特人》电影拍摄地，漫步于中土世界的霍比特人洞穴，感受电影场景的真实还原与魔幻氛围。"></p>
+                            <div class="experience-tags">
+                                <span class="experience-tag" data-i18n="电影取景地"></span>
+                                <span class="experience-tag" data-i18n="中土世界"></span>
+                                <span class="experience-tag" data-i18n="主题导览"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 文化体验板块 -->
+    <section class="section section-dark" id="culture-section">
+        <div class="container">
+            <h2 class="section-title fade-in" data-i18n="新西兰文化体验"></h2>
+            
+            <div class="culture-circle-layout">
+                <!-- 毛利文化体验 -->
+                <div class="culture-circle-item fade-in">
+                    <div class="circle-container">
+                        <div class="circle-image-wrapper">
+                            <img src="毛利舞.jpg" alt="毛利文化体验" class="circle-image">
+                            <div class="circle-overlay">
+                                <h3 data-i18n="毛利文化体验"></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="circle-content">
+                        <p data-i18n="深入了解新西兰原住民文化，观看震撼的哈卡舞表演，体验传统欢迎仪式，学习毛利木雕艺术，感受悠久的原住民历史与传统。"></p>
+                        <div class="culture-circle-tags">
+                            <span class="circle-tag" data-i18n="哈卡舞"></span>
+                            <span class="circle-tag" data-i18n="毛利会堂"></span>
+                            <span class="circle-tag" data-i18n="鼻触礼"></span>
+                            <span class="circle-tag" data-i18n="传统美食"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 新西兰美食与葡萄酒 -->
+                <div class="culture-circle-item fade-in">
+                    <div class="circle-container">
+                        <div class="circle-image-wrapper">
+                            <img src="美食.jpg" alt="新西兰美食" class="circle-image">
+                            <div class="circle-overlay">
+                                <h3 data-i18n="美食与葡萄酒之旅"></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="circle-content">
+                        <p data-i18n="品尝新西兰独特美食，从新鲜海鲜到农场直供的有机食材。探访世界知名的葡萄酒产区，品尝享誉全球的长相思和黑比诺葡萄酒。"></p>
+                        <div class="culture-circle-tags">
+                            <span class="circle-tag" data-i18n="葡萄酒品鉴"></span>
+                            <span class="circle-tag" data-i18n="海鲜料理"></span>
+                            <span class="circle-tag" data-i18n="农场餐厅"></span>
+                            <span class="circle-tag" data-i18n="咖啡文化"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 户外冒险文化 -->
+                <div class="culture-circle-item fade-in">
+                    <div class="circle-container">
+                        <div class="circle-image-wrapper">
+                            <img src="跳伞.jpg" alt="新西兰户外冒险" class="circle-image">
+                            <div class="circle-overlay">
+                                <h3 data-i18n="户外冒险精神"></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="circle-content">
+                        <p data-i18n="体验新西兰人热爱的户外活动，从蹦极、跳伞到徒步、滑雪，感受这个国家对自然的热爱和勇于挑战的冒险精神。"></p>
+                        <div class="culture-circle-tags">
+                            <span class="circle-tag" data-i18n="极限运动"></span>
+                            <span class="circle-tag" data-i18n="徒步旅行"></span>
+                            <span class="circle-tag" data-i18n="滑雪"></span>
+                            <span class="circle-tag" data-i18n="水上运动"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 艺术与创意 -->
+                <div class="culture-circle-item fade-in">
+                    <div class="circle-container">
+                        <div class="circle-image-wrapper">
+                            <img src="艺术.jpg" alt="新西兰艺术" class="circle-image">
+                            <div class="circle-overlay">
+                                <h3 data-i18n="艺术与创意产业"></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="circle-content">
+                        <p data-i18n="探索新西兰蓬勃发展的艺术 scene，从当代艺术展览到本土电影制作，感受这个国家独特的创意表达和文化创新。"></p>
+                        <div class="culture-circle-tags">
+                            <span class="circle-tag" data-i18n="当代艺术"></span>
+                            <span class="circle-tag" data-i18n="电影制作"></span>
+                            <span class="circle-tag" data-i18n="音乐现场"></span>
+                            <span class="circle-tag" data-i18n="手工艺品"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 旅行小贴士 -->
+    <section class="section section-light">
+        <div class="container">
+            <h2 class="section-title fade-in" data-i18n="新西兰旅行小贴士"></h2>
+            <div class="travel-tips fade-in">
+                <ul>
+                    <li><strong data-i18n="南北岛交通"></strong><span data-i18n="：可通过渡轮（Interislander）或国内航班连接南北岛，渡轮约3.5小时，航班约1小时。"></span></li>
+                    <li><strong data-i18n="签证"></strong><span data-i18n="：中国公民需提前申请新西兰旅游签证，建议至少提前1个月提交申请，可通过在线系统办理。"></span></li>
+                    <li><strong data-i18n="自驾提示"></strong><span data-i18n="：新西兰为右舵左行，需国际驾照或翻译件；南岛公路风景优美但部分路段蜿蜒，需谨慎驾驶。"></span></li>
+                    <li><strong data-i18n="货币"></strong><span data-i18n="：使用新西兰元（NZD），大部分商家支持信用卡，建议携带少量现金应急。"></span></li>
+                    <li><strong data-i18n="时差"></strong><span data-i18n="：新西兰比北京时间快4小时（夏令时快5小时，每年9月-次年4月）。"></span></li>
+                    <li><strong data-i18n="文化礼仪"></strong><span data-i18n="：参观毛利文化场所时需遵循指引，参与欢迎仪式时应脱帽并尊重传统习俗。"></span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <a href="../index.html" class="logo" style="color: white; margin-bottom: 1rem; display: inline-flex;">
+                    <i class="fas fa-globe-asia"></i>
+                    Travel NZ
+                </a>
+                <p data-i18n="为全球旅行者提供专业的新西兰旅游规划与预订服务"></p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3 data-i18n="联系我们"></h3>
+                <p data-i18n="客服邮箱：service@travelnz.com"></p>
+                <p data-i18n="24小时紧急热线：+64 27-888-8888"></p>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="© 2025 Travel NZ. 保留所有权利。"></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 滚动进度条
+        window.addEventListener('scroll', function() {
+            const winHeight = window.innerHeight;
+            const docHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset;
+            const scrollPercent = (scrollTop / (docHeight - winHeight)) * 100;
+            document.getElementById('progressBar').style.width = scrollPercent + '%';
+        });
+
+        // 语言包定义
+        const translations = {
+            zh: {
+                // 英雄区域翻译
+                "探索新西兰的自然奇观": "探索新西兰的自然奇观",
+                "发现纯净自然与独特文化的完美融合，开启您的难忘旅程": "发现纯净自然与独特文化的完美融合，开启您的难忘旅程",
+                "开启探索之旅": "开启探索之旅",
+                "客服邮箱：service@travelnz.com": "客服邮箱：service@travelnz.com",
+                "24小时紧急热线：+64 27-888-8888": "24小时紧急热线：+64 27-888-8888",
+                
+                // 导航栏
+                "首页": "首页",
+                "旅行产品": "旅行产品",
+                "联系我们": "联系我们",
+                
+                // 快速导航按钮
+                "旅游景点": "旅游景点",
+                "特色体验": "特色体验",
+                "文化体验": "文化体验",
+                
+                // 首页内容
+                "新西兰旅游景点": "新西兰旅游景点",
+                "北岛（North Island）": "北岛（North Island）",
+                "奥克兰（Auckland）": "奥克兰（Auckland）",
+                "新西兰最大城市，拥有超过50座火山锥，是全球拥有帆船比例最高的城市，被誉为'千帆之都'。": "新西兰最大城市，拥有超过50座火山锥，是全球拥有帆船比例最高的城市，被誉为'千帆之都'。",
+                "必游景点": "必游景点",
+                "天空塔（Sky Tower）- 城市地标，可高空漫步": "天空塔（Sky Tower）- 城市地标，可高空漫步",
+                "伊甸山（Mount Eden）- 休眠火山，俯瞰全城": "伊甸山（Mount Eden）- 休眠火山，俯瞰全城",
+                "德文波特（Devonport）- 历史小镇与海滩": "德文波特（Devonport）- 历史小镇与海滩",
+                "豪拉基湾岛屿巡游": "豪拉基湾岛屿巡游",
+                "奥克兰城市风光": "奥克兰城市风光",
+                
+                "罗托鲁瓦（Rotorua）": "罗托鲁瓦（Rotorua）",
+                "新西兰著名的地热城市，以硫磺温泉、间歇泉和浓厚的毛利文化闻名于世。": "新西兰著名的地热城市，以硫磺温泉、间歇泉和浓厚的毛利文化闻名于世。",
+                "华卡雷瓦雷瓦地热保护区": "华卡雷瓦雷瓦地热保护区",
+                "波利尼西亚温泉（世界顶级温泉）": "波利尼西亚温泉（世界顶级温泉）",
+                "毛利文化村与传统表演": "毛利文化村与传统表演",
+                "红杉林步道": "红杉林步道",
+                "罗托鲁瓦地热景观": "罗托鲁瓦地热景观",
+                
+                "陶波湖（Lake Taupo）": "陶波湖（Lake Taupo）",
+                "由火山喷发形成的新西兰最大湖泊，湖面积几乎相当于新加坡，是水上活动的天堂。": "由火山喷发形成的新西兰最大湖泊，湖面积几乎相当于新加坡，是水上活动的天堂。",
+                "胡卡瀑布（Huka Falls）": "胡卡瀑布（Huka Falls）",
+                "汤加里罗国家公园（世界双遗产）": "汤加里罗国家公园（世界双遗产）",
+                "湖钓（特别适合钓三文鱼）": "湖钓（特别适合钓三文鱼）",
+                "怀拉基火山谷": "怀拉基火山谷",
+                "陶波湖与火山景观": "陶波湖与火山景观",
+                
+                "南岛（South Island）": "南岛（South Island）",
+                
+                "皇后镇（Queenstown）": "皇后镇（Queenstown）",
+                "南半球的冒险之都，坐落在瓦卡蒂普湖湖畔，四周环绕壮丽的南阿尔卑斯山。": "南半球的冒险之都，坐落在瓦卡蒂普湖湖畔，四周环绕壮丽的南阿尔卑斯山。",
+                "卡瓦劳大桥蹦极（世界蹦极发源地）": "卡瓦劳大桥蹦极（世界蹦极发源地）",
+                "米尔福德峡湾一日游": "米尔福德峡湾一日游",
+                "箭镇（历史淘金小镇）": "箭镇（历史淘金小镇）",
+                "卓越山脉滑雪场": "卓越山脉滑雪场",
+                "皇后镇湖景": "皇后镇湖景",
+                
+                "基督城（Christchurch）": "基督城（Christchurch）",
+                "南岛最大城市，被誉为'花园城市'，融合了英式建筑与现代设计，是探索南岛的门户。": "南岛最大城市，被誉为'花园城市'，融合了英式建筑与现代设计，是探索南岛的门户。",
+                "基督城植物园": "基督城植物园",
+                "雅芳河撑篙": "雅芳河撑篙",
+                "纸板大教堂": "纸板大教堂",
+                "利特尔顿港": "利特尔顿港",
+                "基督城花园": "基督城花园",
+                
+                "米尔福德峡湾（Milford Sound）": "米尔福德峡湾（Milford Sound）",
+                "世界自然遗产，被称为'世界第八大奇迹'，是新西兰最著名的自然景观之一。": "世界自然遗产，被称为'世界第八大奇迹'，是新西兰最著名的自然景观之一。",
+                "斯特林瀑布与 Bowen 瀑布": "斯特林瀑布与 Bowen 瀑布",
+                "塔斯曼海出海口": "塔斯曼海出海口",
+                "水下观测站（观赏黑珊瑚）": "水下观测站（观赏黑珊瑚）",
+                "米尔福德步道（世界顶级徒步路线）": "米尔福德步道（世界顶级徒步路线）",
+                "米尔福德峡湾瀑布": "米尔福德峡湾瀑布",
+                
+                // 特色体验板块
+                "新西兰特色体验": "新西兰特色体验",
+                "冰川探险": "冰川探险",
+                "踏上壮观的福克斯冰川或弗朗兹约瑟夫冰川，体验冰川徒步、直升机观光等独特活动，感受冰雪世界的震撼与纯净。": "踏上壮观的福克斯冰川或弗朗兹约瑟夫冰川，体验冰川徒步、直升机观光等独特活动，感受冰雪世界的震撼与纯净。",
+                "冰川徒步": "冰川徒步",
+                "直升机观光": "直升机观光",
+                "冰洞探索": "冰洞探索",
+                "冰川探险": "冰川探险",
+                
+                "观星之旅": "观星之旅",
+                "前往蒂卡普湖，在世界最大的暗夜星空保护区仰望璀璨星空，体验专业天文望远镜观测，感受宇宙的浩瀚与神秘。": "前往蒂卡普湖，在世界最大的暗夜星空保护区仰望璀璨星空，体验专业天文望远镜观测，感受宇宙的浩瀚与神秘。",
+                "暗夜星空": "暗夜星空",
+                "天文观测": "天文观测",
+                "星空摄影": "星空摄影",
+                "观星之旅": "观星之旅",
+                
+                "霍比特村之旅": "霍比特村之旅",
+                "探访《指环王》与《霍比特人》电影拍摄地，漫步于中土世界的霍比特人洞穴，感受电影场景的真实还原与魔幻氛围。": "探访《指环王》与《霍比特人》电影拍摄地，漫步于中土世界的霍比特人洞穴，感受电影场景的真实还原与魔幻氛围。",
+                "电影取景地": "电影取景地",
+                "中土世界": "中土世界",
+                "主题导览": "主题导览",
+                "霍比特村": "霍比特村",
+                
+                "新西兰文化体验": "新西兰文化体验",
+                
+                "毛利文化体验": "毛利文化体验",
+                "深入了解新西兰原住民文化，观看震撼的哈卡舞表演，体验传统欢迎仪式，学习毛利木雕艺术，感受悠久的原住民历史与传统。": "深入了解新西兰原住民文化，观看震撼的哈卡舞表演，体验传统欢迎仪式，学习毛利木雕艺术，感受悠久的原住民历史与传统。",
+                "哈卡舞": "哈卡舞",
+                "毛利会堂": "毛利会堂",
+                "鼻触礼": "鼻触礼",
+                "传统美食": "传统美食",
+                "毛利传统表演": "毛利传统表演",
+                
+                "美食与葡萄酒之旅": "美食与葡萄酒之旅",
+                "品尝新西兰独特美食，从新鲜海鲜到农场直供的有机食材。探访世界知名的葡萄酒产区，品尝享誉全球的长相思和黑比诺葡萄酒。": "品尝新西兰独特美食，从新鲜海鲜到农场直供的有机食材。探访世界知名的葡萄酒产区，品尝享誉全球的长相思和黑比诺葡萄酒。",
+                "葡萄酒品鉴": "葡萄酒品鉴",
+                "海鲜料理": "海鲜料理",
+                "农场餐厅": "农场餐厅",
+                "咖啡文化": "咖啡文化",
+                "新西兰美食与葡萄酒": "新西兰美食与葡萄酒",
+                
+                "户外冒险精神": "户外冒险精神",
+                "体验新西兰人热爱的户外活动，从蹦极、跳伞到徒步、滑雪，感受这个国家对自然的热爱和勇于挑战的冒险精神。": "体验新西兰人热爱的户外活动，从蹦极、跳伞到徒步、滑雪，感受这个国家对自然的热爱和勇于挑战的冒险精神。",
+                "极限运动": "极限运动",
+                "徒步旅行": "徒步旅行",
+                "滑雪": "滑雪",
+                "水上运动": "水上运动",
+                "新西兰户外冒险": "新西兰户外冒险",
+                
+                "艺术与创意产业": "艺术与创意产业",
+                "探索新西兰蓬勃发展的艺术 scene，从当代艺术展览到本土电影制作，感受这个国家独特的创意表达和文化创新。": "探索新西兰蓬勃发展的艺术 scene，从当代艺术展览到本土电影制作，感受这个国家独特的创意表达和文化创新。",
+                "当代艺术": "当代艺术",
+                "电影制作": "电影制作",
+                "音乐现场": "音乐现场",
+                "手工艺品": "手工艺品",
+                "新西兰艺术与创意": "新西兰艺术与创意",
+                
+                // 旅行小贴士
+                "新西兰旅行小贴士": "新西兰旅行小贴士",
+                "南北岛交通": "南北岛交通",
+                "：可通过渡轮（Interislander）或国内航班连接南北岛，渡轮约3.5小时，航班约1小时。": "：可通过渡轮（Interislander）或国内航班连接南北岛，渡轮约3.5小时，航班约1小时。",
+                "签证": "签证",
+                "：中国公民需提前申请新西兰旅游签证，建议至少提前1个月提交申请，可通过在线系统办理。": "：中国公民需提前申请新西兰旅游签证，建议至少提前1个月提交申请，可通过在线系统办理。",
+                "自驾提示": "自驾提示",
+                "：新西兰为右舵左行，需国际驾照或翻译件；南岛公路风景优美但部分路段蜿蜒，需谨慎驾驶。": "：新西兰为右舵左行，需国际驾照或翻译件；南岛公路风景优美但部分路段蜿蜒，需谨慎驾驶。",
+                "货币": "货币",
+                "：使用新西兰元（NZD），大部分商家支持信用卡，建议携带少量现金应急。": "：使用新西兰元（NZD），大部分商家支持信用卡，建议携带少量现金应急。",
+                "时差": "时差",
+                "：新西兰比北京时间快4小时（夏令时快5小时，每年9月-次年4月）。": "：新西兰比北京时间快4小时（夏令时快5小时，每年9月-次年4月）。",
+                "文化礼仪": "文化礼仪",
+                "：参观毛利文化场所时需遵循指引，参与欢迎仪式时应脱帽并尊重传统习俗。": "：参观毛利文化场所时需遵循指引，参与欢迎仪式时应脱帽并尊重传统习俗。",
+                
+                // 页脚
+                "为全球旅行者提供专业的新西兰旅游规划与预订服务": "为全球旅行者提供专业的新西兰旅游规划与预订服务",
+                "© 2025 Travel NZ. 保留所有权利。": "© 2025 Travel NZ. 保留所有权利。"
+            },
+            en: {
+                // 英雄区域翻译
+                "探索新西兰的自然奇观": "Discover New Zealand's Natural Wonders",
+                "发现纯净自然与独特文化的完美融合，开启您的难忘旅程": "Experience the perfect blend of pristine nature and unique culture on your unforgettable journey",
+                "开启探索之旅": "Start Your Journey",
+                "客服邮箱：service@travelnz.com": "Support Email: service@travelnz.com",
+                "24小时紧急热线：+64 27-888-8888": "24/7 Emergency Hotline: +64 27-888-8888",
+                
+                // 导航栏
+                "首页": "Home",
+                "旅行产品": "Travel Products",
+                "联系我们": "Contact Us",
+
+                // 快速导航按钮
+                "旅游景点": "Attractions",
+                "特色体验": "Features",
+                "文化体验": "Culture",
+                
+                // 首页内容
+                "新西兰旅游景点": "New Zealand Attractions",
+                "北岛（North Island）": "North Island",
+                "奥克兰（Auckland）": "Auckland",
+                "新西兰最大城市，拥有超过50座火山锥，是全球拥有帆船比例最高的城市，被誉为'千帆之都'。": "New Zealand's largest city with over 50 volcanic cones, known as the 'City of Sails' for its high proportion of sailboats.",
+                "必游景点": "Must-visit Attractions",
+                "天空塔（Sky Tower）- 城市地标，可高空漫步": "Sky Tower - City landmark with skywalk experience",
+                "伊甸山（Mount Eden）- 休眠火山，俯瞰全城": "Mount Eden - Dormant volcano with panoramic city views",
+                "德文波特（Devonport）- 历史小镇与海滩": "Devonport - Historic town with beautiful beaches",
+                "豪拉基湾岛屿巡游": "Hauraki Gulf island cruises",
+                "奥克兰城市风光": "Auckland cityscape",
+                
+                "罗托鲁瓦（Rotorua）": "Rotorua",
+                "新西兰著名的地热城市，以硫磺温泉、间歇泉和浓厚的毛利文化闻名于世。": "Famous geothermal city known for sulfur springs, geysers and rich Māori culture.",
+                "华卡雷瓦雷瓦地热保护区": "Wai-O-Tapu Thermal Reserve",
+                "波利尼西亚温泉（世界顶级温泉）": "Polynesian Spa (world-class hot springs)",
+                "毛利文化村与传统表演": "Māori cultural village with traditional performances",
+                "红杉林步道": "Redwood forest walking tracks",
+                "罗托鲁瓦地热景观": "Rotorua geothermal landscape",
+                
+                "陶波湖（Lake Taupo）": "Lake Taupo",
+                "由火山喷发形成的新西兰最大湖泊，湖面积几乎相当于新加坡，是水上活动的天堂。": "New Zealand's largest lake formed by volcanic eruption, almost the size of Singapore, a paradise for water activities.",
+                "胡卡瀑布（Huka Falls）": "Huka Falls",
+                "汤加里罗国家公园（世界双遗产）": "Tongariro National Park (Dual World Heritage Site)",
+                "湖钓（特别适合钓三文鱼）": "Lake fishing (especially good for salmon)",
+                "怀拉基火山谷": "Wairakei Thermal Valley",
+                "陶波湖与火山景观": "Lake Taupo and volcanic landscape",
+                
+                "南岛（South Island）": "South Island",
+                
+                "皇后镇（Queenstown）": "Queenstown",
+                "南半球的冒险之都，坐落在瓦卡蒂普湖湖畔，四周环绕壮丽的南阿尔卑斯山。": "Adventure capital of the Southern Hemisphere, nestled on Lake Wakatipu with stunning Southern Alps backdrop.",
+                "卡瓦劳大桥蹦极（世界蹦极发源地）": "Kawarau Bridge Bungy (birthplace of commercial bungy)",
+                "米尔福德峡湾一日游": "Milford Sound day trips",
+                "箭镇（历史淘金小镇）": "Arrowtown (historic gold rush town)",
+                "卓越山脉滑雪场": "The Remarkables ski field",
+                "皇后镇湖景": "Queenstown lake view",
+                
+                "基督城（Christchurch）": "Christchurch",
+                "南岛最大城市，被誉为'花园城市'，融合了英式建筑与现代设计，是探索南岛的门户。": "Largest city in the South Island, known as the 'Garden City' with a mix of English architecture and modern design.",
+                "基督城植物园": "Christchurch Botanic Gardens",
+                "雅芳河撑篙": "Avon River punting",
+                "纸板大教堂": "Cardboard Cathedral",
+                "利特尔顿港": "Lyttelton Harbour",
+                "基督城花园": "Christchurch gardens",
+                
+                "米尔福德峡湾（Milford Sound）": "Milford Sound",
+                "世界自然遗产，被称为'世界第八大奇迹'，是新西兰最著名的自然景观之一。": "World Heritage site known as the 'Eighth Wonder of the World', one of New Zealand's most famous natural attractions.",
+                "斯特林瀑布与 Bowen 瀑布": "Stirling Falls and Bowen Falls",
+                "塔斯曼海出海口": "Tasman Sea entrance",
+                "水下观测站（观赏黑珊瑚）": "Underwater observatory (view black coral)",
+                "米尔福德步道（世界顶级徒步路线）": "Milford Track (world-class hiking trail)",
+                "米尔福德峡湾瀑布": "Milford Sound waterfalls",
+                
+                // 特色体验板块
+                "新西兰特色体验": "New Zealand Special Experiences",
+                "冰川探险": "Glacier Adventure",
+                "踏上壮观的福克斯冰川或弗朗兹约瑟夫冰川，体验冰川徒步、直升机观光等独特活动，感受冰雪世界的震撼与纯净。": "Step onto the spectacular Fox Glacier or Franz Josef Glacier, experience glacier hiking, helicopter tours and other unique activities, feel the awe and purity of the ice world.",
+                "冰川徒步": "Glacier Hiking",
+                "直升机观光": "Helicopter Tours",
+                "冰洞探索": "Ice Cave Exploration",
+                "冰川探险": "Glacier Adventure",
+                
+                "观星之旅": "Stargazing Journey",
+                "前往蒂卡普湖，在世界最大的暗夜星空保护区仰望璀璨星空，体验专业天文望远镜观测，感受宇宙的浩瀚与神秘。": "Visit Lake Tekapo, gaze at the brilliant starry sky in the world's largest dark sky reserve, experience professional astronomical telescope observation, feel the vastness and mystery of the universe.",
+                "暗夜星空": "Dark Sky",
+                "天文观测": "Astronomical Observation",
+                "星空摄影": "Astrophotography",
+                "观星之旅": "Stargazing Journey",
+                
+                "霍比特村之旅": "Hobbiton Tour",
+                "探访《指环王》与《霍比特人》电影拍摄地，漫步于中土世界的霍比特人洞穴，感受电影场景的真实还原与魔幻氛围。": "Visit the filming locations of 'The Lord of the Rings' and 'The Hobbit', wander through the Hobbit holes of Middle-earth, experience the authentic restoration and magical atmosphere of the movie scenes.",
+                "电影取景地": "Film Location",
+                "中土世界": "Middle-earth",
+                "主题导览": "Themed Tour",
+                "霍比特村": "Hobbiton",
+                
+                "新西兰文化体验": "New Zealand Cultural Experiences",
+                
+                "毛利文化体验": "Māori Cultural Experience",
+                "深入了解新西兰原住民文化，观看震撼的哈卡舞表演，体验传统欢迎仪式，学习毛利木雕艺术，感受悠久的原住民历史与传统。": "Gain insight into New Zealand's indigenous culture with powerful haka performances, traditional welcome ceremonies, Māori wood carving, and ancient traditions.",
+                "哈卡舞": "Haka",
+                "毛利会堂": "Marae",
+                "鼻触礼": "Hongi",
+                "传统美食": "Traditional Cuisine",
+                "毛利传统表演": "Māori traditional performance",
+                
+                "美食与葡萄酒之旅": "Food and Wine Journey",
+                "品尝新西兰独特美食，从新鲜海鲜到农场直供的有机食材。探访世界知名的葡萄酒产区，品尝享誉全球的长相思和黑比诺葡萄酒。": "Taste New Zealand's unique cuisine from fresh seafood to farm-to-table organic ingredients. Visit world-renowned wine regions and enjoy famous Sauvignon Blanc and Pinot Noir.",
+                "葡萄酒品鉴": "Wine Tasting",
+                "海鲜料理": "Seafood Dishes",
+                "农场餐厅": "Farm Restaurants",
+                "咖啡文化": "Coffee Culture",
+                "新西兰美食与葡萄酒": "New Zealand food and wine",
+                
+                "户外冒险精神": "Outdoor Adventure Spirit",
+                "体验新西兰人热爱的户外活动，从蹦极、跳伞到徒步、滑雪，感受这个国家对自然的热爱和勇于挑战的冒险精神。": "Experience New Zealanders' love for outdoor activities from bungy jumping and skydiving to hiking and skiing, embracing the nation's love for nature and adventure.",
+                "极限运动": "Extreme Sports",
+                "徒步旅行": "Hiking",
+                "滑雪": "Skiing",
+                "水上运动": "Water Sports",
+                "新西兰户外冒险": "New Zealand outdoor adventure",
+                
+                "艺术与创意产业": "Arts and Creative Industries",
+                "探索新西兰蓬勃发展的艺术 scene，从当代艺术展览到本土电影制作，感受这个国家独特的创意表达和文化创新。": "Explore New Zealand's thriving arts scene from contemporary art exhibitions to local film productions, experiencing the nation's unique creative expression and cultural innovation.",
+                "当代艺术": "Contemporary Art",
+                "电影制作": "Film Production",
+                "音乐现场": "Live Music",
+                "手工艺品": "Handicrafts",
+                "新西兰艺术与创意": "New Zealand arts and creativity",
+                
+                // 旅行小贴士
+                "新西兰旅行小贴士": "New Zealand Travel Tips",
+                "南北岛交通": "North-South Island Transport",
+                "：可通过渡轮（Interislander）或国内航班连接南北岛，渡轮约3.5小时，航班约1小时。": ": Connect via Interislander ferry (3.5 hours) or domestic flights (1 hour) between islands.",
+                "签证": "Visa",
+                "：中国公民需提前申请新西兰旅游签证，建议至少提前1个月提交申请，可通过在线系统办理。": ": Chinese citizens need to apply for a New Zealand tourist visa in advance, recommended at least 1 month prior via online system.",
+                "自驾提示": "Driving Tips",
+                "：新西兰为右舵左行，需国际驾照或翻译件；南岛公路风景优美但部分路段蜿蜒，需谨慎驾驶。": ": New Zealand uses right-hand drive on left side of road; international driver's license or translation required. South Island roads are scenic but sometimes winding, drive carefully.",
+                "货币": "Currency",
+                "：使用新西兰元（NZD），大部分商家支持信用卡，建议携带少量现金应急。": ": New Zealand Dollar (NZD) is used. Most merchants accept credit cards, but carry some cash for emergencies.",
+                "时差": "Time Difference",
+                "：新西兰比北京时间快4小时（夏令时快5小时，每年9月-次年4月）。": ": New Zealand is 4 hours ahead of Beijing time (5 hours during daylight saving, September-April).",
+                "文化礼仪": "Cultural Etiquette",
+                "：参观毛利文化场所时需遵循指引，参与欢迎仪式时应脱帽并尊重传统习俗。": ": Follow guidelines when visiting Māori cultural sites. Remove hats and respect traditions during welcome ceremonies.",
+                
+                // 页脚
+                "为全球旅行者提供专业的新西兰旅游规划与预订服务": "Providing professional New Zealand travel planning and booking services for global travelers",
+                "© 2025 Travel NZ. 保留所有权利。": "© 2025 Travel NZ. All rights reserved."
+            }
+        };
+
+        // 初始化语言
+        function setLanguage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // 更新活跃按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
+        }
+
+        // 语言切换事件
+        document.querySelectorAll('.lang-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const lang = button.getAttribute('data-lang');
+                setLanguage(lang);
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // 英雄区域背景轮播
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        const slideCount = slides.length;
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slideCount;
+            slides[currentSlide].classList.add('active');
+        }
+
+        // 每5秒切换一张背景图片
+        setInterval(nextSlide, 5000);
+
+        // 滚动动画
+        function checkFadeElements() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            fadeElements.forEach((element, index) => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 10;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    // 为元素添加延迟，创建级联效果
+                    setTimeout(() => {
+                        element.classList.add('visible');
+                    }, index * 10);
+                }
+            });
+        }
+
+        // 探索按钮点击事件
+        document.getElementById('exploreBtn').addEventListener('click', () => {
+            const attractionsSection = document.getElementById('attractions-section');
+            if (attractionsSection) {
+                window.scrollTo({
+                    top: attractionsSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        // 快速导航按钮功能
+        document.getElementById('navAttractions').addEventListener('click', () => {
+            const attractionsSection = document.getElementById('attractions-section');
+            if (attractionsSection) {
+                window.scrollTo({
+                    top: attractionsSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        document.getElementById('navFeatures').addEventListener('click', () => {
+            const featuresSection = document.getElementById('features-section');
+            if (featuresSection) {
+                window.scrollTo({
+                    top: featuresSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        document.getElementById('navCulture').addEventListener('click', () => {
+            const cultureSection = document.getElementById('culture-section');
+            if (cultureSection) {
+                window.scrollTo({
+                    top: cultureSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        // 初始检查和滚动时检查
+        window.addEventListener('load', checkFadeElements);
+        window.addEventListener('scroll', checkFadeElements);
+
+        // 初始化页面为英文
+        document.addEventListener('DOMContentLoaded', () => {
+            setLanguage('en');
+        });
+    </script>
+</body>
+</html>
